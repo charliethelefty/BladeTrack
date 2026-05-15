@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BladeTrack — Knife Value Tracker & Community</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f;
+    --surface: #161718;
+    --surface2: #1f2022;
+    --border: #2a2b2e;
+    --accent: #c8a55a;
+    --accent2: #e8c97a;
+    --danger: #e05a5a;
+    --success: #5aab7a;
+    --text: #e8e6e0;
+    --muted: #7a7870;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(14,14,15,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 60px;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; letter-spacing: 4px; color: var(--accent);
+    text-decoration: none; display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo svg { width: 22px; height: 22px; }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    padding: 7px 14px; border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-link:hover { color: var(--text); border-color: var(--border); }
+  .nav-link.active { color: var(--accent); border-color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: calc(100vh - 60px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 80px 24px;
+    overflow: hidden;
+  }
+  .hero-bg-line {
+    position: absolute;
+    width: 1px; background: var(--border);
+    top: 0; bottom: 0; opacity: 0.5;
+  }
+  .hero-bg-line:nth-child(1) { left: 20%; }
+  .hero-bg-line:nth-child(2) { left: 40%; }
+  .hero-bg-line:nth-child(3) { left: 60%; }
+  .hero-bg-line:nth-child(4) { left: 80%; }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 3px; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 20px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 12vw, 140px);
+    letter-spacing: 8px; line-height: 0.9;
+    color: var(--text);
+    animation: fadeUp 0.6s 0.1s ease both;
+    position: relative;
+  }
+  .hero-title span { color: var(--accent); }
+  .hero-sub {
+    font-size: 16px; color: var(--muted);
+    max-width: 480px; line-height: 1.6;
+    margin: 24px auto 0;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-cta {
+    display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .btn-primary {
+    background: var(--accent); color: #0e0e0f;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 14px 28px; border-radius: 4px;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-secondary {
+    background: transparent; color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 14px 28px; border-radius: 4px;
+    text-decoration: none; border: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--muted); }
+
+  .hero-stats {
+    display: flex; gap: 48px; margin-top: 64px;
+    animation: fadeUp 0.6s 0.4s ease both;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; letter-spacing: 2px; color: var(--accent);
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 1px; color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* FEATURES */
+  .features {
+    position: relative; z-index: 1;
+    padding: 80px 32px;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    letter-spacing: 4px; color: var(--text);
+    margin-bottom: 48px;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 24px;
+    transition: border-color 0.2s, transform 0.2s;
+    text-decoration: none; color: inherit;
+    display: block;
+  }
+  .feature-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .feature-icon { font-size: 32px; margin-bottom: 16px; }
+  .feature-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 2px;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .feature-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 1px;
+    margin-top: 16px; text-decoration: none;
+  }
+
+  /* DIVIDER */
+  .divider {
+    position: relative; z-index: 1;
+    border: none; border-top: 1px solid var(--border);
+    margin: 0 32px;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; letter-spacing: 3px; color: var(--accent);
+  }
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--muted); letter-spacing: 1px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 16px; }
+    .nav-link { padding: 6px 10px; font-size: 10px; }
+    .features { padding: 60px 16px; }
+    footer { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M3 20 L18 5 L21 8 L8 20 Z" fill="#c8a55a"/>
+      <path d="M18 5 L21 8 L20 9 L17 6 Z" fill="#e8c97a"/>
+      <path d="M3 20 L6 21 L8 20 L3 20 Z" fill="#7a7870"/>
+    </svg>
+    BLADETRACK
+  </a>
+  <div class="nav-links">
+    <a class="nav-link active" href="index.html">HOME</a>
+    <a class="nav-link" href="tracker.html">TRACKER</a>
+    <a class="nav-link" href="board.html">BOARD</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg-line"></div>
+  <div class="hero-bg-line"></div>
+  <div class="hero-bg-line"></div>
+  <div class="hero-bg-line"></div>
+
+  <div class="hero-eyebrow">// The Knife Collector's Hub</div>
+  <h1 class="hero-title">BLADE<span>TRACK</span></h1>
+  <p class="hero-sub">Track second-hand knife values in real time. Connect with collectors. Know what your blades are worth.</p>
+
+  <div class="hero-cta">
+    <a class="btn-primary" href="tracker.html">SEARCH KNIFE VALUES</a>
+    <a class="btn-secondary" href="board.html">JOIN THE DISCUSSION</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">Knife Models</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">$0</div>
+      <div class="stat-label">Cost to Use</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Always Live</div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="section-label">// What BladeTrack Does</div>
+  <div class="section-title">TWO TOOLS.<br>ONE COMMUNITY.</div>
+  <div class="feature-grid">
+
+    <a class="feature-card" href="tracker.html">
+      <div class="feature-icon">📈</div>
+      <div class="feature-title">VALUE TRACKER</div>
+      <div class="feature-desc">Search any pocket or fixed blade by brand and model. Get current market value, 8-month price history, and a buy/sell/hold recommendation — all in one place.</div>
+      <div class="feature-link">Open Tracker →</div>
+    </a>
+
+    <a class="feature-card" href="board.html">
+      <div class="feature-icon">💬</div>
+      <div class="feature-title">DISCUSSION BOARD</div>
+      <div class="feature-desc">Talk knives with fellow collectors. Share finds, ask questions about steels and makers, post reviews, or just geek out over your latest acquisition.</div>
+      <div class="feature-link">Go to Board →</div>
+    </a>
+
+    <div class="feature-card" style="cursor:default">
+      <div class="feature-icon">📦</div>
+      <div class="feature-title">COLLECTION LOG</div>
+      <div class="feature-desc">Add knives from the tracker to your personal collection. Track what you paid vs. what they're worth now — stored right in your browser.</div>
+      <div class="feature-link" style="color:var(--muted)">Available in Tracker</div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">BLADETRACK</div>
+  <div class="footer-note">⚠ Prices are estimates. Always verify before buying or selling.</div>
+  <div class="footer-note">Free & open — hosted on GitHub Pages</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BladeTrack — Discussion Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f; --surface: #161718; --surface2: #1f2022;
+    --border: #2a2b2e; --accent: #c8a55a; --accent2: #e8c97a;
+    --danger: #e05a5a; --success: #5aab7a; --text: #e8e6e0; --muted: #7a7870;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; }
+
+  nav { position:sticky; top:0; z-index:200; background:rgba(14,14,15,0.95); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 32px; height:60px; }
+  .nav-logo { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:4px; color:var(--accent); text-decoration:none; display:flex; align-items:center; gap:10px; }
+  .nav-logo svg { width:22px; height:22px; }
+  .nav-links { display:flex; gap:8px; }
+  .nav-link { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:7px 14px; border-radius:4px; border:1px solid transparent; transition:all 0.2s; }
+  .nav-link:hover { color:var(--text); border-color:var(--border); }
+  .nav-link.active { color:var(--accent); border-color:var(--accent); }
+
+  .page-wrap { max-width: 820px; margin: 0 auto; padding: 40px 24px 80px; position: relative; z-index: 1; }
+
+  .page-eyebrow { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--accent); text-transform:uppercase; margin-bottom:6px; }
+  .page-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(36px,6vw,64px); letter-spacing:4px; color:var(--text); margin-bottom:6px; }
+  .page-sub { font-size:14px; color:var(--muted); margin-bottom:32px; }
+
+  /* Setup Banner */
+  #setupBanner { background:rgba(200,165,90,0.08); border:1px solid rgba(200,165,90,0.3); border-radius:8px; padding:20px 24px; margin-bottom:28px; }
+  #setupBanner h3 { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:2px; color:var(--accent); margin-bottom:8px; }
+  #setupBanner p { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:12px; }
+  .setup-inputs { display:flex; flex-direction:column; gap:8px; }
+  .setup-input { background:var(--surface2); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:'DM Mono',monospace; font-size:12px; padding:10px 12px; outline:none; transition:border-color 0.2s; }
+  .setup-input:focus { border-color:var(--accent); }
+  .setup-btn { background:var(--accent); border:none; border-radius:4px; color:#0e0e0f; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; padding:10px 20px; cursor:pointer; margin-top:4px; align-self:flex-start; transition:background 0.2s; }
+  .setup-btn:hover { background:var(--accent2); }
+
+  /* Compose box */
+  .compose-box { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:24px; }
+  .compose-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--accent); text-transform:uppercase; margin-bottom:12px; }
+  .compose-name { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; padding:10px 12px; outline:none; margin-bottom:8px; transition:border-color 0.2s; }
+  .compose-name:focus { border-color:var(--accent); }
+  .compose-subject { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; padding:10px 12px; outline:none; margin-bottom:8px; transition:border-color 0.2s; }
+  .compose-subject:focus { border-color:var(--accent); }
+  .compose-body { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; padding:10px 12px; outline:none; resize:vertical; min-height:90px; line-height:1.5; margin-bottom:12px; transition:border-color 0.2s; }
+  .compose-body:focus { border-color:var(--accent); }
+  .compose-footer { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .compose-tags { display:flex; gap:6px; flex-wrap:wrap; }
+  .tag-pill { background:var(--surface); border:1px solid var(--border); border-radius:12px; color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; padding:4px 10px; cursor:pointer; transition:all 0.15s; }
+  .tag-pill.selected { background:var(--accent); border-color:var(--accent); color:#0e0e0f; }
+  .post-btn { background:var(--accent); border:none; border-radius:4px; color:#0e0e0f; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; padding:10px 22px; cursor:pointer; transition:background 0.2s; }
+  .post-btn:hover { background:var(--accent2); }
+  .post-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+  /* Filter */
+  .board-filter { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+  .filter-btn { background:var(--surface); border:1px solid var(--border); border-radius:16px; color:var(--muted); font-family:'DM Mono',monospace; font-size:11px; padding:5px 14px; cursor:pointer; transition:all 0.15s; }
+  .filter-btn.active { background:var(--accent); border-color:var(--accent); color:#0e0e0f; }
+
+  /* Posts */
+  .post-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:12px; animation:fadeUp 0.3s ease both; transition:border-color 0.2s; }
+  .post-card:hover { border-color:var(--steel,#4a5568); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .post-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
+  .post-avatar { width:38px; height:38px; border-radius:50%; background:var(--surface2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .post-meta { flex:1; }
+  .post-author { font-family:'DM Mono',monospace; font-size:12px; color:var(--accent); letter-spacing:0.5px; margin-bottom:2px; }
+  .post-time { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }
+  .post-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; padding:3px 8px; border-radius:10px; border:1px solid; }
+  .tag-general { color:#7a9abf; border-color:rgba(122,154,191,0.3); background:rgba(122,154,191,0.08); }
+  .tag-buying { color:var(--success); border-color:rgba(90,171,122,0.3); background:rgba(90,171,122,0.08); }
+  .tag-selling { color:var(--danger); border-color:rgba(224,90,90,0.3); background:rgba(224,90,90,0.08); }
+  .tag-review { color:var(--accent); border-color:rgba(200,165,90,0.3); background:rgba(200,165,90,0.08); }
+  .tag-steels { color:#b97fe8; border-color:rgba(185,127,232,0.3); background:rgba(185,127,232,0.08); }
+  .post-subject { font-size:16px; font-weight:500; color:var(--text); margin-bottom:8px; line-height:1.3; }
+  .post-body { font-size:14px; color:var(--muted); line-height:1.65; }
+  .post-actions { display:flex; gap:16px; margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+  .post-action { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.5px; cursor:pointer; display:flex; align-items:center; gap:5px; background:none; border:none; transition:color 0.15s; }
+  .post-action:hover { color:var(--accent); }
+  .post-action.liked { color:var(--accent); }
+
+  /* Reply area */
+  .reply-area { display:none; margin-top:14px; }
+  .reply-area.open { display:block; }
+  .reply-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; padding:10px 12px; outline:none; resize:none; min-height:70px; line-height:1.5; margin-bottom:8px; transition:border-color 0.2s; }
+  .reply-input:focus { border-color:var(--accent); }
+  .reply-row { display:flex; gap:8px; align-items:center; }
+  .reply-name-input { background:var(--surface2); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:'DM Mono',monospace; font-size:11px; padding:8px 10px; outline:none; flex:1; transition:border-color 0.2s; }
+  .reply-name-input:focus { border-color:var(--accent); }
+  .reply-btn { background:var(--surface2); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1px; padding:8px 14px; cursor:pointer; transition:all 0.15s; }
+  .reply-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+  /* Replies */
+  .replies { margin-top:14px; border-left:2px solid var(--border); padding-left:16px; }
+  .reply-item { margin-bottom:12px; }
+  .reply-author { font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); margin-bottom:3px; }
+  .reply-time { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); margin-left:8px; }
+  .reply-text { font-size:13px; color:var(--muted); line-height:1.5; }
+
+  /* Loading */
+  .board-loading { text-align:center; padding:48px; }
+  .board-loading-bar { width:120px; height:2px; background:var(--border); border-radius:2px; overflow:hidden; margin:0 auto 12px; }
+  .board-loading-bar::after { content:''; display:block; height:100%; width:40%; background:var(--accent); animation:slide 1s ease-in-out infinite; }
+  @keyframes slide { 0%{transform:translateX(-100%)} 100%{transform:translateX(350%)} }
+  .board-loading-text { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:2px; }
+
+  .empty-board { text-align:center; padding:60px 20px; }
+  .empty-board .ei { font-size:48px; opacity:0.25; margin-bottom:12px; }
+  .empty-board .et { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:3px; color:var(--muted); margin-bottom:6px; }
+  .empty-board .es { font-size:13px; color:var(--muted); opacity:0.7; }
+
+  @media(max-width:600px){ nav{padding:0 16px;} .nav-link{padding:6px 10px;font-size:10px;} .page-wrap{padding:28px 16px 60px;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M3 20 L18 5 L21 8 L8 20 Z" fill="#c8a55a"/><path d="M18 5 L21 8 L20 9 L17 6 Z" fill="#e8c97a"/><path d="M3 20 L6 21 L8 20 L3 20 Z" fill="#7a7870"/></svg>
+    BLADETRACK
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">HOME</a>
+    <a class="nav-link" href="tracker.html">TRACKER</a>
+    <a class="nav-link active" href="board.html">BOARD</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-eyebrow">// General Discussion</div>
+  <div class="page-title">THE BOARD</div>
+  <div class="page-sub">Talk knives. Share finds, ask questions, post reviews — all welcome.</div>
+
+  <!-- Supabase Setup Banner -->
+  <div id="setupBanner">
+    <h3>⚙ ONE-TIME SETUP REQUIRED</h3>
+    <p>The message board uses <strong>Supabase</strong> (free) to store posts. Enter your Supabase project URL and anon key below. These are saved in your browser. See <strong>README.md</strong> for setup instructions.</p>
+    <div class="setup-inputs">
+      <input class="setup-input" id="sbUrl" placeholder="https://xxxxxxxxxxx.supabase.co" type="url">
+      <input class="setup-input" id="sbKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." type="text">
+      <button class="setup-btn" onclick="saveSupabase()">SAVE & CONNECT</button>
+    </div>
+  </div>
+
+  <!-- Compose -->
+  <div class="compose-box">
+    <div class="compose-title">// Post to the Board</div>
+    <input class="compose-name" id="postName" placeholder="Your name or handle" maxlength="40">
+    <input class="compose-subject" id="postSubject" placeholder="Subject / title of your post" maxlength="120">
+    <textarea class="compose-body" id="postBody" placeholder="What's on your mind? Ask a question, share a find, start a discussion..."></textarea>
+    <div class="compose-footer">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:6px">TOPIC</div>
+        <div class="compose-tags">
+          <div class="tag-pill selected" onclick="selectTag(this,'general')">General</div>
+          <div class="tag-pill" onclick="selectTag(this,'buying')">Buying</div>
+          <div class="tag-pill" onclick="selectTag(this,'selling')">Selling</div>
+          <div class="tag-pill" onclick="selectTag(this,'review')">Review</div>
+          <div class="tag-pill" onclick="selectTag(this,'steels')">Steels</div>
+        </div>
+      </div>
+      <button class="post-btn" id="postBtn" onclick="submitPost()">POST →</button>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="board-filter">
+    <div class="filter-btn active" onclick="setFilter(this,'all')">ALL</div>
+    <div class="filter-btn" onclick="setFilter(this,'general')">GENERAL</div>
+    <div class="filter-btn" onclick="setFilter(this,'buying')">BUYING</div>
+    <div class="filter-btn" onclick="setFilter(this,'selling')">SELLING</div>
+    <div class="filter-btn" onclick="setFilter(this,'review')">REVIEWS</div>
+    <div class="filter-btn" onclick="setFilter(this,'steels')">STEELS</div>
+  </div>
+
+  <!-- Board -->
+  <div id="boardLoading" class="board-loading" style="display:none">
+    <div class="board-loading-bar"></div>
+    <div class="board-loading-text">LOADING POSTS...</div>
+  </div>
+  <div id="boardEmpty" class="empty-board" style="display:none">
+    <div class="ei">💬</div>
+    <div class="et">No Posts Yet</div>
+    <div class="es">Be the first to start a discussion!</div>
+  </div>
+  <div id="postsContainer"></div>
+</div>
+
+<script>
+// ─── Supabase config ───────────────────────────────────────
+let SUPABASE_URL = localStorage.getItem('bt_sb_url') || '';
+let SUPABASE_KEY = localStorage.getItem('bt_sb_key') || '';
+let activeFilter = 'all';
+let selectedTag = 'general';
+let localLikes = JSON.parse(localStorage.getItem('bt_likes') || '{}');
+
+// Seed posts for when no Supabase is configured
+const seedPosts = [
+  { id:'seed1', author:'EdgeCollector', subject:'What\'s everyone\'s EDC this week?', body:'Been carrying my Benchmade Bugout all month. Lightweight and the axis lock is buttery smooth. What are you all pocketing?', tag:'general', created_at: new Date(Date.now()-3600000*5).toISOString(), likes:12, replies:[{author:'SteelNerd',text:'Spyderco Para 3 in M4 — can\'t put it down. The steel holds an edge forever.',created_at:new Date(Date.now()-3600000*4).toISOString()},{author:'BushcraftBob',text:'Buck 110 all day. Classic never dies.',created_at:new Date(Date.now()-3600000*2).toISOString()}] },
+  { id:'seed2', author:'FixedBladeFreak', subject:'ESEE vs Ka-Bar — which do you trust in the field?', body:'Picking up a fixed blade for camping. Both have cult followings. ESEE 6 vs Ka-Bar BK2 — which one and why?', tag:'general', created_at: new Date(Date.now()-3600000*12).toISOString(), likes:8, replies:[{author:'SurvivalStan',text:'ESEE all the way. The lifetime warranty is no questions asked, and the convex grind cuts like a dream.',created_at:new Date(Date.now()-3600000*10).toISOString()}] },
+  { id:'seed3', author:'GrindNerd', subject:'Quick review: Spyderco Para 3 Lightweight', body:'Just picked one up used for $85. S35VN steel, compression lock, slim lightweight scales. Sharpens easily, holds an edge well for the price. 8.5/10 — only gripe is the clip marks up easily. Would recommend for EDC carry.', tag:'review', created_at: new Date(Date.now()-3600000*24).toISOString(), likes:15, replies:[] },
+  { id:'seed4', author:'MetalHead99', subject:'WTS: Cold Steel SRK — $42 shipped', body:'Selling my Cold Steel SRK, used a handful of times. No scratches on the blade, sheath included. $42 shipped CONUS. PayPal G&S only. DM me.', tag:'selling', created_at: new Date(Date.now()-3600000*36).toISOString(), likes:3, replies:[] },
+  { id:'seed5', author:'SteelGeek', subject:'S30V vs S35VN — is the upgrade worth it?', body:'I keep seeing S35VN marketed as an improvement over S30V. In practical use, is the difference noticeable? Sharpenability, edge retention, chipping resistance?', tag:'steels', created_at: new Date(Date.now()-3600000*48).toISOString(), likes:21, replies:[{author:'KnifeNerd42',text:'S35VN is tougher and easier to sharpen without meaningful loss in edge retention. Absolutely worth it.',created_at:new Date(Date.now()-3600000*46).toISOString()},{author:'EdgeCollector',text:'For most people, the difference is academic. If you\'re actually sharpening your knives regularly, you\'ll love S35VN.',created_at:new Date(Date.now()-3600000*44).toISOString()}] },
+];
+
+// ─── Init ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if (SUPABASE_URL) {
+    document.getElementById('sbUrl').value = SUPABASE_URL;
+    document.getElementById('sbKey').value = SUPABASE_KEY;
+    document.getElementById('setupBanner').style.display = 'none';
+  }
+  loadPosts();
+});
+
+function saveSupabase() {
+  const url = document.getElementById('sbUrl').value.trim();
+  const key = document.getElementById('sbKey').value.trim();
+  if (!url || !key) { alert('Please enter both your Supabase URL and anon key.'); return; }
+  SUPABASE_URL = url; SUPABASE_KEY = key;
+  localStorage.setItem('bt_sb_url', url);
+  localStorage.setItem('bt_sb_key', key);
+  document.getElementById('setupBanner').style.display = 'none';
+  loadPosts();
+}
+
+function selectTag(el, tag) {
+  document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTag = tag;
+}
+
+function setFilter(el, filter) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  activeFilter = filter;
+  loadPosts();
+}
+
+// ─── Supabase helpers ──────────────────────────────────────
+async function sbFetch(path, options = {}) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation', ...options.headers },
+    ...options
+  });
+  if (!res.ok) return null;
+  const text = await res.text();
+  return text ? JSON.parse(text) : [];
+}
+
+// ─── Load posts ────────────────────────────────────────────
+async function loadPosts() {
+  document.getElementById('boardLoading').style.display = 'block';
+  document.getElementById('boardEmpty').style.display = 'none';
+  document.getElementById('postsContainer').innerHTML = '';
+
+  let posts = [];
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    const filter = activeFilter !== 'all' ? `&tag=eq.${activeFilter}` : '';
+    const data = await sbFetch(`bt_posts?select=*,bt_replies(*)&order=created_at.desc${filter}`);
+    if (data) {
+      posts = data.map(p => ({ ...p, replies: p.bt_replies || [] }));
+    }
+  }
+
+  // Fall back to seed posts if no Supabase or empty
+  if (posts.length === 0) {
+    posts = seedPosts.filter(p => activeFilter === 'all' || p.tag === activeFilter);
+  }
+
+  document.getElementById('boardLoading').style.display = 'none';
+  if (posts.length === 0) { document.getElementById('boardEmpty').style.display = 'block'; return; }
+  posts.forEach((post, i) => renderPost(post, i));
+}
+
+// ─── Render ────────────────────────────────────────────────
+function renderPost(post, i) {
+  const container = document.getElementById('postsContainer');
+  const card = document.createElement('div');
+  card.className = 'post-card';
+  card.id = `post-${post.id}`;
+  card.style.animationDelay = (i * 0.06) + 's';
+
+  const initials = (post.author || 'A').slice(0,2).toUpperCase();
+  const tagLabel = post.tag || 'general';
+  const tagClass = `tag-${tagLabel}`;
+  const liked = localLikes[post.id];
+  const likeCount = (post.likes || 0) + (liked ? 0 : 0);
+  const timeStr = timeAgo(new Date(post.created_at));
+  const repliesHtml = (post.replies || []).map(r => `
+    <div class="reply-item">
+      <div><span class="reply-author">${esc(r.author)}</span><span class="reply-time">${timeAgo(new Date(r.created_at))}</span></div>
+      <div class="reply-text">${esc(r.body || r.text || '')}</div>
+    </div>`).join('');
+
+  card.innerHTML = `
+    <div class="post-header">
+      <div style="display:flex;gap:12px;align-items:flex-start;flex:1">
+        <div class="post-avatar">${initials.slice(0,1)}</div>
+        <div class="post-meta">
+          <div class="post-author">${esc(post.author)}</div>
+          <div class="post-time">${timeStr}</div>
+        </div>
+      </div>
+      <div class="post-tag ${tagClass}">${tagLabel}</div>
+    </div>
+    <div class="post-subject">${esc(post.subject)}</div>
+    <div class="post-body">${esc(post.body)}</div>
+    ${repliesHtml ? `<div class="replies">${repliesHtml}</div>` : ''}
+    <div class="reply-area" id="reply-${post.id}">
+      <textarea class="reply-input" id="replyBody-${post.id}" placeholder="Write a reply..."></textarea>
+      <div class="reply-row">
+        <input class="reply-name-input" id="replyName-${post.id}" placeholder="Your name">
+        <button class="reply-btn" onclick="submitReply('${post.id}')">REPLY →</button>
+      </div>
+    </div>
+    <div class="post-actions">
+      <button class="post-action ${liked?'liked':''}" id="like-${post.id}" onclick="likePost('${post.id}', this)">
+        ♦ ${likeCount} ${likeCount===1?'like':'likes'}
+      </button>
+      <button class="post-action" onclick="toggleReply('${post.id}')">↩ Reply (${(post.replies||[]).length})</button>
+    </div>`;
+  container.appendChild(card);
+}
+
+// ─── Actions ───────────────────────────────────────────────
+async function submitPost() {
+  const name = document.getElementById('postName').value.trim();
+  const subject = document.getElementById('postSubject').value.trim();
+  const body = document.getElementById('postBody').value.trim();
+  if (!name || !subject || !body) { alert('Please fill in your name, subject, and message.'); return; }
+  document.getElementById('postBtn').disabled = true;
+
+  const newPost = { author: name, subject, body, tag: selectedTag, likes: 0, created_at: new Date().toISOString(), replies: [] };
+
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    const res = await sbFetch('bt_posts', { method: 'POST', body: JSON.stringify({ author: name, subject, body, tag: selectedTag, likes: 0 }) });
+    if (res && res[0]) newPost.id = res[0].id;
+  } else {
+    newPost.id = 'local_' + Date.now();
+  }
+
+  document.getElementById('postName').value = '';
+  document.getElementById('postSubject').value = '';
+  document.getElementById('postBody').value = '';
+  document.getElementById('postBtn').disabled = false;
+
+  const container = document.getElementById('postsContainer');
+  document.getElementById('boardEmpty').style.display = 'none';
+  const temp = document.createElement('div');
+  container.insertBefore(temp, container.firstChild);
+  temp.outerHTML = '';
+  renderPost(newPost, 0);
+  container.insertBefore(document.getElementById(`post-${newPost.id}`), container.firstChild);
+}
+
+async function submitReply(postId) {
+  const name = document.getElementById(`replyName-${postId}`).value.trim();
+  const body = document.getElementById(`replyBody-${postId}`).value.trim();
+  if (!name || !body) { alert('Enter your name and reply text.'); return; }
+
+  if (SUPABASE_URL && SUPABASE_KEY && !postId.startsWith('seed') && !postId.startsWith('local')) {
+    await sbFetch('bt_replies', { method: 'POST', body: JSON.stringify({ post_id: postId, author: name, body }) });
+  }
+
+  const repliesDiv = document.querySelector(`#post-${postId} .replies`) || (() => {
+    const d = document.createElement('div'); d.className = 'replies';
+    document.querySelector(`#post-${postId} .reply-area`).before(d); return d;
+  })();
+  const item = document.createElement('div');
+  item.className = 'reply-item';
+  item.innerHTML = `<div><span class="reply-author">${esc(name)}</span><span class="reply-time">just now</span></div><div class="reply-text">${esc(body)}</div>`;
+  repliesDiv.appendChild(item);
+
+  document.getElementById(`replyBody-${postId}`).value = '';
+  document.getElementById(`replyName-${postId}`).value = '';
+  document.getElementById(`reply-${postId}`).classList.remove('open');
+
+  // Update reply count
+  const replyBtn = document.querySelector(`#post-${postId} .post-action:nth-child(2)`);
+  if (replyBtn) {
+    const match = replyBtn.textContent.match(/\d+/);
+    const cnt = match ? parseInt(match[0]) + 1 : 1;
+    replyBtn.textContent = `↩ Reply (${cnt})`;
+  }
+}
+
+async function likePost(postId, btn) {
+  if (localLikes[postId]) return;
+  localLikes[postId] = true;
+  localStorage.setItem('bt_likes', JSON.stringify(localLikes));
+  const match = btn.textContent.match(/\d+/);
+  const cnt = match ? parseInt(match[0]) + 1 : 1;
+  btn.textContent = `♦ ${cnt} ${cnt===1?'like':'likes'}`;
+  btn.classList.add('liked');
+
+  if (SUPABASE_URL && SUPABASE_KEY && !postId.startsWith('seed') && !postId.startsWith('local')) {
+    await sbFetch(`bt_posts?id=eq.${postId}`, { method: 'PATCH', body: JSON.stringify({ likes: cnt }) });
+  }
+}
+
+function toggleReply(postId) {
+  document.getElementById(`reply-${postId}`).classList.toggle('open');
+}
+
+// ─── Utils ─────────────────────────────────────────────────
+function esc(str) { return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function timeAgo(date) {
+  const diff = (Date.now() - date) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+</script>
+</body>
+</html>
