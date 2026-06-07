@@ -20,13 +20,7 @@
     pointer-events: none; z-index: 0;
   }
 
-  nav {
-    position: sticky; top: 0; z-index: 200;
-    background: rgba(14,14,15,0.95); backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 32px; height: 60px;
-  }
+  nav { position: sticky; top: 0; z-index: 200; background: rgba(14,14,15,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 60px; }
   .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 4px; color: var(--accent); text-decoration: none; display: flex; align-items: center; gap: 10px; }
   .nav-logo svg { width: 22px; height: 22px; }
   .nav-links { display: flex; gap: 8px; }
@@ -46,6 +40,11 @@
   .search-input:focus { border-color: var(--accent); }
   .search-btn { background: var(--accent); border: none; border-radius: 4px; color: #0e0e0f; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 2px; padding: 13px 24px; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
   .search-btn:hover { background: var(--accent2); }
+  .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .ai-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(200,165,90,0.1); border: 1px solid rgba(200,165,90,0.3); border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); padding: 4px 12px; margin-top: 10px; letter-spacing: 1px; }
+  .ai-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
   .popular-section { padding: 16px 32px 0; position: relative; z-index: 1; }
   .popular-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
@@ -53,36 +52,34 @@
   .chip { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; padding: 5px 14px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .chip:hover { border-color: var(--accent); color: var(--accent); }
 
-  .filter-row { display: flex; gap: 8px; padding: 16px 32px 0; flex-wrap: wrap; position: relative; z-index: 1; }
-  .pill { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.5px; padding: 6px 14px; white-space: nowrap; cursor: pointer; transition: all 0.15s; }
-  .pill.active { background: var(--accent); border-color: var(--accent); color: #0e0e0f; }
-
   .main { padding: 20px 32px 60px; position: relative; z-index: 1; }
 
-  .loading { display: none; flex-direction: column; align-items: center; gap: 12px; padding: 64px 0; }
-  .loading.active { display: flex; }
-  .loading-bar { width: 160px; height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .loading-bar::after { content: ''; display: block; height: 100%; width: 40%; background: var(--accent); border-radius: 2px; animation: slide 1s ease-in-out infinite; }
-  @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
-  .loading-text { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 2px; }
+  /* Loading */
+  .loading { display: none; padding: 48px 0; }
+  .loading.active { display: block; }
+  .loading-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .loading-spinner { width: 40px; height: 40px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-steps { display: flex; flex-direction: column; gap: 8px; min-width: 260px; }
+  .loading-step { display: flex; align-items: center; gap: 10px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; transition: color 0.3s; }
+  .loading-step.active { color: var(--accent); }
+  .loading-step.done { color: var(--success); }
+  .step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 
+  /* Empty state */
   .empty-state { text-align: center; padding: 80px 20px; }
   .empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.25; }
   .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: var(--muted); margin-bottom: 8px; }
   .empty-sub { font-size: 14px; color: var(--muted); opacity: 0.7; line-height: 1.6; }
 
+  /* Result card */
   .result-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 14px; }
   .result-title { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
-  .result-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); }
+  .result-ai-tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 1px; background: rgba(200,165,90,0.1); border: 1px solid rgba(200,165,90,0.2); border-radius: 10px; padding: 3px 10px; }
 
-  .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
-
-  .knife-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; animation: fadeUp 0.35s ease both; transition: border-color 0.2s; }
+  .knife-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; animation: fadeUp 0.35s ease both; transition: border-color 0.2s; margin-bottom: 14px; }
   .knife-card:hover { border-color: var(--steel); }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .knife-card:nth-child(2) { animation-delay: 0.06s; }
-  .knife-card:nth-child(3) { animation-delay: 0.12s; }
-  .knife-card:nth-child(4) { animation-delay: 0.18s; }
 
   .card-top { padding: 18px; display: flex; gap: 14px; cursor: pointer; }
   .card-img { width: 72px; height: 72px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; }
@@ -99,36 +96,45 @@
   .card-detail { display: none; border-top: 1px solid var(--border); padding: 18px; background: var(--surface2); }
   .card-detail.open { display: block; }
 
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+  .detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
   .detail-item-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
   .detail-item-value { font-size: 14px; color: var(--text); font-weight: 500; }
 
   .chart-section { margin-bottom: 18px; }
   .chart-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
   .mini-chart { height: 70px; display: flex; align-items: flex-end; gap: 5px; }
-  .chart-bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--steel); transition: background 0.2s; cursor: pointer; position: relative; }
-  .chart-bar:hover::after { content: attr(data-val); position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%); background: var(--accent); color: #0e0e0f; font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 5px; border-radius: 3px; white-space: nowrap; }
+  .chart-bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--steel); position: relative; cursor: default; }
   .chart-bar.highest { background: var(--accent); }
   .chart-bar.lowest { background: var(--danger); opacity: 0.7; }
   .chart-months { display: flex; gap: 5px; margin-top: 5px; }
   .chart-month { flex: 1; text-align: center; font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); }
 
-  .rec-box { border-radius: 5px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .rec-box { border-radius: 5px; padding: 12px 14px; display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
   .rec-buy { background: rgba(90,171,122,0.1); border: 1px solid rgba(90,171,122,0.3); }
   .rec-sell { background: rgba(224,90,90,0.1); border: 1px solid rgba(224,90,90,0.3); }
   .rec-hold { background: rgba(200,165,90,0.1); border: 1px solid rgba(200,165,90,0.3); }
-  .rec-icon { font-size: 22px; }
+  .rec-icon { font-size: 22px; flex-shrink: 0; }
   .rec-action { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; }
   .rec-buy .rec-action { color: var(--success); } .rec-sell .rec-action { color: var(--danger); } .rec-hold .rec-action { color: var(--accent); }
-  .rec-reason { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+  .rec-reason { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+
+  .notes-box { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 12px 14px; margin-bottom: 14px; font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .notes-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
 
   .sources-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
-  .source-links { display: flex; flex-wrap: wrap; gap: 6px; }
+  .source-links { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
   .source-link { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 10px; padding: 5px 10px; text-decoration: none; letter-spacing: 0.5px; transition: border-color 0.2s; }
   .source-link:hover { border-color: var(--accent); }
-  .add-col-btn { margin-top: 14px; background: var(--accent); border: none; border-radius: 4px; color: #0e0e0f; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; padding: 10px 16px; cursor: pointer; width: 100%; transition: background 0.2s; }
+
+  .add-col-btn { background: var(--accent); border: none; border-radius: 4px; color: #0e0e0f; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; padding: 10px 16px; cursor: pointer; width: 100%; transition: background 0.2s; }
   .add-col-btn:hover { background: var(--accent2); }
 
+  /* Error box */
+  .error-box { background: rgba(224,90,90,0.08); border: 1px solid rgba(224,90,90,0.3); border-radius: 8px; padding: 20px 24px; text-align: center; }
+  .error-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--danger); margin-bottom: 6px; }
+  .error-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* Collection bar */
   .collection-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
   .col-bar-text { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
   .col-bar-count { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--accent); }
@@ -139,8 +145,7 @@
   @media (max-width: 700px) {
     nav { padding: 0 16px; }
     .nav-link { padding: 6px 10px; font-size: 10px; }
-    .page-header, .search-section, .popular-section, .filter-row, .main { padding-left: 16px; padding-right: 16px; }
-    .results-grid { grid-template-columns: 1fr; }
+    .page-header, .search-section, .popular-section, .main { padding-left: 16px; padding-right: 16px; }
     .detail-grid { grid-template-columns: 1fr 1fr; }
     .collection-bar { padding: 12px 16px; }
   }
@@ -161,61 +166,66 @@
 </nav>
 
 <div class="page-header">
-  <div class="page-eyebrow">// Market Intelligence</div>
+  <div class="page-eyebrow">// AI-Powered Market Intelligence</div>
   <div class="page-title">KNIFE VALUE TRACKER</div>
+  <div class="ai-badge"><div class="ai-dot"></div> POWERED BY CLAUDE AI — ANY KNIFE, ANY BRAND</div>
 </div>
 
 <div class="search-section">
-  <span class="search-label">Search by Brand & Model</span>
+  <span class="search-label">Search any knife by brand & model</span>
   <div class="search-row">
-    <input class="search-input" type="text" id="searchInput" placeholder="e.g. Benchmade Bugout, Spyderco Para 3, Buck 110..." autocomplete="off" autocorrect="off" spellcheck="false">
-    <button class="search-btn" onclick="doSearch()">SEARCH</button>
+    <input class="search-input" type="text" id="searchInput" placeholder="e.g. Benchmade Bugout, Chris Reeve Sebenza, Hinderer XM-18..." autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="search-btn" id="searchBtn" onclick="doSearch()">SEARCH</button>
   </div>
 </div>
 
 <div class="popular-section">
   <div class="popular-label">// Popular searches</div>
   <div class="popular-chips">
-    <div class="chip" onclick="quickSearch('Benchmade Bugout')">Benchmade Bugout</div>
-    <div class="chip" onclick="quickSearch('Benchmade Griptilian')">Benchmade Griptilian</div>
-    <div class="chip" onclick="quickSearch('Spyderco Para 3')">Spyderco Para 3</div>
+    <div class="chip" onclick="quickSearch('Benchmade Bugout 535')">Benchmade Bugout</div>
     <div class="chip" onclick="quickSearch('Spyderco Paramilitary 2')">Spyderco PM2</div>
-    <div class="chip" onclick="quickSearch('Spyderco Delica')">Spyderco Delica</div>
-    <div class="chip" onclick="quickSearch('Kershaw Leek')">Kershaw Leek</div>
+    <div class="chip" onclick="quickSearch('Spyderco Para 3')">Spyderco Para 3</div>
+    <div class="chip" onclick="quickSearch('Chris Reeve Sebenza 31')">CRK Sebenza 31</div>
+    <div class="chip" onclick="quickSearch('Hinderer XM-18')">Hinderer XM-18</div>
     <div class="chip" onclick="quickSearch('Microtech Ultratech')">Microtech Ultratech</div>
-    <div class="chip" onclick="quickSearch('Zero Tolerance 0450')">ZT 0450</div>
-    <div class="chip" onclick="quickSearch('Buck 110')">Buck 110</div>
-    <div class="chip" onclick="quickSearch('Case Trapper')">Case Trapper</div>
+    <div class="chip" onclick="quickSearch('Zero Tolerance 0562')">ZT 0562</div>
+    <div class="chip" onclick="quickSearch('Buck 110 Folding Hunter')">Buck 110</div>
     <div class="chip" onclick="quickSearch('ESEE 6')">ESEE 6</div>
-    <div class="chip" onclick="quickSearch('ESEE 4')">ESEE 4</div>
-    <div class="chip" onclick="quickSearch('Ka-Bar BK2')">Ka-Bar BK2</div>
-    <div class="chip" onclick="quickSearch('Ka-Bar USMC')">Ka-Bar USMC</div>
+    <div class="chip" onclick="quickSearch('Ka-Bar Becker BK2')">Ka-Bar BK2</div>
     <div class="chip" onclick="quickSearch('Cold Steel SRK')">Cold Steel SRK</div>
-    <div class="chip" onclick="quickSearch('Mora Companion')">Mora Companion</div>
+    <div class="chip" onclick="quickSearch('Kershaw Leek')">Kershaw Leek</div>
+    <div class="chip" onclick="quickSearch('Morakniv Companion')">Morakniv Companion</div>
+    <div class="chip" onclick="quickSearch('Case Trapper')">Case Trapper</div>
     <div class="chip" onclick="quickSearch('Gerber LMF II')">Gerber LMF II</div>
+    <div class="chip" onclick="quickSearch('Benchmade Griptilian')">Benchmade Griptilian</div>
+    <div class="chip" onclick="quickSearch('Spyderco Delica 4')">Spyderco Delica</div>
+    <div class="chip" onclick="quickSearch('CJRB Feldspar')">CJRB Feldspar</div>
   </div>
-</div>
-
-<div class="filter-row">
-  <div class="pill active" onclick="setFilter(this,'all')">ALL TYPES</div>
-  <div class="pill" onclick="setFilter(this,'pocket')">POCKET / FOLDING</div>
-  <div class="pill" onclick="setFilter(this,'fixed')">FIXED BLADE</div>
-  <div class="pill" onclick="setFilter(this,'hunting')">HUNTING</div>
 </div>
 
 <div class="main">
   <div class="loading" id="loading">
-    <div class="loading-bar"></div>
-    <div class="loading-text">SCANNING MARKETS...</div>
+    <div class="loading-inner">
+      <div class="loading-spinner"></div>
+      <div class="loading-steps">
+        <div class="loading-step" id="step1"><div class="step-dot"></div>IDENTIFYING KNIFE MODEL...</div>
+        <div class="loading-step" id="step2"><div class="step-dot"></div>RESEARCHING MARKET DATA...</div>
+        <div class="loading-step" id="step3"><div class="step-dot"></div>GENERATING PRICE HISTORY...</div>
+        <div class="loading-step" id="step4"><div class="step-dot"></div>BUILDING RECOMMENDATION...</div>
+      </div>
+    </div>
   </div>
+
   <div id="emptyState" class="empty-state">
     <div class="empty-icon">🔪</div>
-    <div class="empty-title">Search to Begin</div>
-    <div class="empty-sub">Enter a knife brand and model above,<br>or tap a popular search to get started.</div>
+    <div class="empty-title">Search Any Knife</div>
+    <div class="empty-sub">Powered by Claude AI — search any brand, model, or variant.<br>No limit on what you can look up.</div>
   </div>
+
   <div id="results"></div>
+
   <div class="disclaimer" id="disclaimer" style="display:none">
-    ⚠ Prices are AI-estimated based on known market data patterns. Always verify on BladeBinge, eBay, r/knife_swap, BladeForums, KnifeHub, or KnifeMarket before buying or selling.
+    ⚠ Prices are AI-estimated based on Claude's training data. Always verify on BladeBinge, eBay, r/knife_swap, BladeForums, or KnifeHub before buying or selling.
   </div>
 </div>
 
@@ -227,23 +237,19 @@
   <a class="col-bar-link" href="#collection">VIEW ALL ↓</a>
 </div>
 
-<!-- Collection Section -->
 <div id="collection" style="padding: 0 32px 80px; position:relative; z-index:1; display:none">
   <div style="border-top:1px solid var(--border); padding-top:32px; margin-bottom:20px;">
     <div class="page-eyebrow">// Your Inventory</div>
-    <div class="page-title" style="font-size:40px">MY COLLECTION</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:4px;">MY COLLECTION</div>
   </div>
   <div id="collectionList"></div>
 </div>
 
 <script>
-let activeFilter = 'all';
 let collection = JSON.parse(localStorage.getItem('bladetrack_collection') || '[]');
 
-// Shared source builder — generates all marketplace links for a given search term
 function makeSources(query) {
   const q = encodeURIComponent(query);
-  const qDash = query.toLowerCase().replace(/\s+/g,'-');
   return [
     { name:'BladeBinge',   url:`https://bladebinge.com/listings?search=${q}` },
     { name:'eBay',         url:`https://www.ebay.com/sch/i.html?_nkw=${q}+used+knife` },
@@ -257,127 +263,171 @@ function makeSources(query) {
   ];
 }
 
-const knifeDatabase = {
-  // ── POCKET / FOLDING ──────────────────────────────────────
-  'benchmade bugout': { name:'Bugout 535', brand:'Benchmade', type:'pocket', typeBadge:'POCKET / EDC', emoji:'🔪', avgPrice:135, lowPrice:95, highPrice:175, retail:180, history:[118,125,128,122,130,135,133,138], trend:'up', trendPct:'+2.3%', sales30d:47, rec:'hold', recReason:'Stable demand, slight upward trend. Fair time to hold.', sources: makeSources('Benchmade Bugout 535') },
-  'benchmade griptilian': { name:'Griptilian 551', brand:'Benchmade', type:'pocket', typeBadge:'POCKET / EDC', emoji:'🔪', avgPrice:95, lowPrice:68, highPrice:130, retail:165, history:[82,85,88,86,90,93,95,96], trend:'up', trendPct:'+2.1%', sales30d:52, rec:'buy', recReason:'Classic workhorse, frequently below retail in secondary market.', sources: makeSources('Benchmade Griptilian 551') },
-  'spyderco para 3': { name:'Para 3', brand:'Spyderco', type:'pocket', typeBadge:'POCKET / EDC', emoji:'🗡️', avgPrice:100, lowPrice:72, highPrice:135, retail:145, history:[88,92,95,90,98,102,100,103], trend:'up', trendPct:'+3.0%', sales30d:61, rec:'buy', recReason:'Consistently below retail, high resale liquidity.', sources: makeSources('Spyderco Para 3') },
-  'spyderco paramilitary 2': { name:'Paramilitary 2', brand:'Spyderco', type:'pocket', typeBadge:'POCKET / TACTICAL', emoji:'🗡️', avgPrice:115, lowPrice:85, highPrice:155, retail:200, history:[100,105,108,110,112,115,114,118], trend:'up', trendPct:'+3.5%', sales30d:78, rec:'buy', recReason:'Trades well below retail. Strong resale demand.', sources: makeSources('Spyderco Paramilitary 2') },
-  'spyderco delica': { name:'Delica 4', brand:'Spyderco', type:'pocket', typeBadge:'POCKET / LIGHTWEIGHT', emoji:'🗡️', avgPrice:55, lowPrice:38, highPrice:75, retail:95, history:[48,50,52,51,53,55,54,56], trend:'flat', trendPct:'+1.8%', sales30d:44, rec:'buy', recReason:'Lightweight EDC staple. Great entry-level value on secondary market.', sources: makeSources('Spyderco Delica 4') },
-  'kershaw leek': { name:'Leek', brand:'Kershaw', type:'pocket', typeBadge:'POCKET / SLIM', emoji:'🔪', avgPrice:28, lowPrice:18, highPrice:42, retail:65, history:[22,24,25,24,26,27,28,29], trend:'up', trendPct:'+3.6%', sales30d:68, rec:'buy', recReason:'High volume resales, always well below retail. Great flipper value.', sources: makeSources('Kershaw Leek') },
-  'zero tolerance 0450': { name:'0450', brand:'Zero Tolerance', type:'pocket', typeBadge:'POCKET / PREMIUM', emoji:'🔪', avgPrice:145, lowPrice:110, highPrice:190, retail:220, history:[130,133,138,135,140,143,145,147], trend:'up', trendPct:'+1.4%', sales30d:21, rec:'hold', recReason:'Premium brand holds value well. Slight upward trend.', sources: makeSources('Zero Tolerance 0450') },
-  'microtech ultratech': { name:'Ultratech', brand:'Microtech', type:'pocket', typeBadge:'POCKET / AUTO', emoji:'🔪', avgPrice:280, lowPrice:220, highPrice:360, retail:400, history:[255,260,265,270,272,275,280,282], trend:'up', trendPct:'+2.5%', sales30d:18, rec:'hold', recReason:'Premium OTF, appreciates steadily. Collector favorite.', sources: makeSources('Microtech Ultratech') },
-  'buck 110': { name:'110 Folding Hunter', brand:'Buck Knives', type:'hunting', typeBadge:'HUNTING / FOLDING', emoji:'🦌', avgPrice:45, lowPrice:28, highPrice:75, retail:75, history:[40,42,43,44,44,45,46,47], trend:'up', trendPct:'+4.4%', sales30d:55, rec:'hold', recReason:'Classic icon with steady collector demand. Hold for appreciation.', sources: makeSources('Buck 110 Folding Hunter') },
-  'case trapper': { name:'Trapper', brand:'Case Knives', type:'hunting', typeBadge:'HUNTING / TRADITIONAL', emoji:'🦌', avgPrice:38, lowPrice:22, highPrice:65, retail:55, history:[33,34,35,35,36,37,38,39], trend:'up', trendPct:'+2.6%', sales30d:42, rec:'hold', recReason:'Traditional collector staple. Vintage models can exceed retail.', sources: makeSources('Case Trapper knife') },
-  // ── FIXED BLADE ───────────────────────────────────────────
-  'ka-bar becker bk2': { name:'Becker BK2', brand:'Ka-Bar', type:'fixed', typeBadge:'FIXED BLADE', emoji:'🔱', avgPrice:65, lowPrice:48, highPrice:85, retail:90, history:[58,60,62,60,63,65,64,66], trend:'flat', trendPct:'+1.5%', sales30d:32, rec:'hold', recReason:'Steady workhorse. Prices stable, no urgency either way.', sources: makeSources('Ka-Bar Becker BK2') },
-  'ka-bar usmc': { name:'USMC Fighting Knife', brand:'Ka-Bar', type:'fixed', typeBadge:'FIXED / TACTICAL', emoji:'🔱', avgPrice:55, lowPrice:38, highPrice:75, retail:75, history:[48,50,52,51,53,54,55,56], trend:'up', trendPct:'+1.8%', sales30d:48, rec:'hold', recReason:'Iconic military knife with consistent civilian demand.', sources: makeSources('Ka-Bar USMC knife') },
-  'gerber lmf ii': { name:'LMF II', brand:'Gerber', type:'fixed', typeBadge:'FIXED / SURVIVAL', emoji:'🔱', avgPrice:55, lowPrice:38, highPrice:75, retail:105, history:[50,52,50,53,54,55,53,56], trend:'flat', trendPct:'+1.8%', sales30d:22, rec:'buy', recReason:'Often found significantly below retail in secondary market.', sources: makeSources('Gerber LMF II') },
-  'esee 6': { name:'ESEE-6', brand:'ESEE Knives', type:'fixed', typeBadge:'FIXED / SURVIVAL', emoji:'🔱', avgPrice:100, lowPrice:78, highPrice:130, retail:160, history:[88,90,92,94,96,98,100,101], trend:'up', trendPct:'+2.0%', sales30d:19, rec:'buy', recReason:'Lifetime warranty transfers. Consistent below-retail pricing.', sources: makeSources('ESEE 6') },
-  'esee 4': { name:'ESEE-4', brand:'ESEE Knives', type:'fixed', typeBadge:'FIXED / SURVIVAL', emoji:'🔱', avgPrice:75, lowPrice:55, highPrice:100, retail:130, history:[65,67,70,69,72,74,75,76], trend:'up', trendPct:'+1.3%', sales30d:24, rec:'buy', recReason:'Compact survival workhorse. Transfers well below retail.', sources: makeSources('ESEE 4') },
-  'cold steel srk': { name:'SRK', brand:'Cold Steel', type:'fixed', typeBadge:'FIXED / TACTICAL', emoji:'⚔️', avgPrice:48, lowPrice:32, highPrice:70, retail:80, history:[42,43,44,45,46,47,48,49], trend:'up', trendPct:'+2.1%', sales30d:28, rec:'hold', recReason:'Budget tactical staple. Slight upward pressure.', sources: makeSources('Cold Steel SRK') },
-  'mora companion': { name:'Companion', brand:'Morakniv', type:'fixed', typeBadge:'FIXED / BUSHCRAFT', emoji:'🔱', avgPrice:14, lowPrice:9, highPrice:22, retail:20, history:[11,11,12,12,13,13,14,14], trend:'flat', trendPct:'+0.8%', sales30d:85, rec:'buy', recReason:'Highest-volume budget fixed blade. Reliable Scandi grind.', sources: makeSources('Morakniv Companion') },
-  'benchmade altitude': { name:'Altitude', brand:'Benchmade', type:'hunting', typeBadge:'HUNTING / FIXED', emoji:'🦌', avgPrice:180, lowPrice:140, highPrice:230, retail:260, history:[160,165,168,170,172,175,178,180], trend:'up', trendPct:'+2.9%', sales30d:12, rec:'hold', recReason:'Premium hunting fixed blade. Holds value exceptionally well.', sources: makeSources('Benchmade Altitude hunting knife') },
-};
-
 function quickSearch(term) {
   document.getElementById('searchInput').value = term;
   doSearch();
 }
 
-function setFilter(el, filter) {
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  activeFilter = filter;
-}
-
-function doSearch() {
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+async function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
   if (!q) return;
+
+  // UI: loading state
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('results').innerHTML = '';
   document.getElementById('disclaimer').style.display = 'none';
   document.getElementById('loading').classList.add('active');
-  setTimeout(() => {
+  document.getElementById('searchBtn').disabled = true;
+
+  // Animate loading steps
+  const steps = ['step1','step2','step3','step4'];
+  let stepIdx = 0;
+  const stepInterval = setInterval(() => {
+    if (stepIdx > 0) document.getElementById(steps[stepIdx-1]).classList.replace('active','done');
+    if (stepIdx < steps.length) { document.getElementById(steps[stepIdx]).classList.add('active'); stepIdx++; }
+  }, 600);
+
+  try {
+    const prompt = `You are a knife market expert. A user searched for: "${q}"
+
+Return a JSON object (no markdown, no explanation, just raw JSON) with this exact structure:
+{
+  "name": "full model name",
+  "brand": "manufacturer brand name",
+  "type": "pocket" or "fixed" or "hunting",
+  "typeBadge": "short category label like POCKET / EDC or FIXED / SURVIVAL",
+  "emoji": "one relevant emoji",
+  "avgPrice": number (typical used price in USD),
+  "lowPrice": number (low end used price),
+  "highPrice": number (high end used price),
+  "retail": number (MSRP new price),
+  "history": [8 numbers representing monthly used prices Jan-Aug, showing realistic trend],
+  "trend": "up" or "down" or "flat",
+  "trendPct": "percentage like +2.3% or -1.1%",
+  "sales30d": number (estimated secondary market sales volume per month),
+  "rec": "buy" or "sell" or "hold",
+  "recReason": "1-2 sentence explanation of why",
+  "notes": "2-3 sentences of useful collector notes: steel type, lock type, notable variants, things to look for when buying used",
+  "knownVariants": ["list", "of", "notable", "variants", "or", "sprint", "runs"]
+}
+
+Base prices on your knowledge of real secondary market prices for this knife. If it's an obscure knife, make a reasonable estimate based on similar knives. Always return valid JSON.`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    clearInterval(stepInterval);
+    steps.forEach(s => { document.getElementById(s).classList.remove('active'); document.getElementById(s).classList.add('done'); });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const knife = JSON.parse(clean);
+    knife.sources = makeSources(`${knife.brand} ${knife.name}`);
+
     document.getElementById('loading').classList.remove('active');
-    const matches = [];
-    for (const [key, data] of Object.entries(knifeDatabase)) {
-      if (key.includes(q) || data.name.toLowerCase().includes(q) || data.brand.toLowerCase().includes(q) || q.includes(data.brand.toLowerCase())) {
-        if (activeFilter === 'all' || data.type === activeFilter) matches.push(data);
-      }
-    }
-    if (matches.length === 0) matches.push(buildGeneric(q));
-    renderResults(matches);
-  }, 1100);
+    document.getElementById('searchBtn').disabled = false;
+    steps.forEach(s => { document.getElementById(s).classList.remove('done','active'); });
+    renderResult(knife);
+
+  } catch (err) {
+    clearInterval(stepInterval);
+    document.getElementById('loading').classList.remove('active');
+    document.getElementById('searchBtn').disabled = false;
+    steps.forEach(s => { document.getElementById(s).classList.remove('done','active'); });
+
+    document.getElementById('results').innerHTML = `
+      <div class="error-box">
+        <div class="error-title">⚠ Search Failed</div>
+        <div class="error-sub">Could not retrieve data for "${q}".<br>Check your internet connection and try again.<br><small style="opacity:0.5;margin-top:6px;display:block">${err.message}</small></div>
+      </div>`;
+  }
 }
 
-function buildGeneric(q) {
-  const words = q.split(' ');
-  const brand = words[0].charAt(0).toUpperCase() + words[0].slice(1);
-  const model = words.slice(1).join(' ').toUpperCase() || 'UNKNOWN MODEL';
-  const base = 60 + Math.floor(Math.random() * 80);
-  return { name: model, brand, type:'pocket', typeBadge:'POCKET / FOLDING', emoji:'🔪', avgPrice:base, lowPrice:Math.round(base*0.7), highPrice:Math.round(base*1.4), retail:Math.round(base*1.6), history:Array.from({length:8},(_,i)=>Math.round(base*(0.9+i*0.015+Math.random()*0.05))), trend:'flat', trendPct:'+1.2%', sales30d:Math.floor(Math.random()*25)+5, rec:'hold', recReason:'Insufficient data — verify pricing via sources below.', sources: makeSources(q), isGeneric:true };
-}
-
-function renderResults(matches) {
+function renderResult(knife) {
   const container = document.getElementById('results');
+
   const hdr = document.createElement('div');
   hdr.className = 'result-header';
-  hdr.innerHTML = `<span class="result-title">RESULTS</span><span class="result-count">${matches.length} FOUND</span>`;
+  hdr.innerHTML = `<span class="result-title">RESULT</span><span class="result-ai-tag">✦ AI GENERATED</span>`;
   container.appendChild(hdr);
-  const grid = document.createElement('div');
-  grid.className = 'results-grid';
-  matches.forEach((knife, i) => {
-    const card = document.createElement('div');
-    card.className = 'knife-card';
-    card.style.animationDelay = (i*0.07)+'s';
-    const tC = knife.trend==='up'?'trend-up':knife.trend==='down'?'trend-down':'trend-flat';
-    const tA = knife.trend==='up'?'↑':knife.trend==='down'?'↓':'→';
-    const maxH = Math.max(...knife.history), minH = Math.min(...knife.history);
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
-    const bars = knife.history.map((h,i)=>{const p=((h-minH)/(maxH-minH||1))*75+25;const c=h===maxH?'highest':h===minH?'lowest':'';return `<div class="chart-bar ${c}" style="height:${p}%" data-val="$${h}"></div>`;}).join('');
-    const mLbls = months.map(m=>`<div class="chart-month">${m}</div>`).join('');
-    const rC=`rec-${knife.rec}`, rE=knife.rec==='buy'?'🟢':knife.rec==='sell'?'🔴':'🟡';
-    const knifeJson = JSON.stringify(knife).replace(/"/g,'&quot;');
-    card.innerHTML = `
-      <div class="card-top" onclick="toggleDetail(this)">
-        <div class="card-img">${knife.emoji}</div>
-        <div class="card-info">
-          <div class="card-name">${knife.name}</div>
-          <div class="card-brand">${knife.brand.toUpperCase()}</div>
-          <div class="card-type-badge">${knife.typeBadge}</div>
-        </div>
-        <div class="card-price-col">
-          <div class="price-label">AVG MARKET</div>
-          <div class="price-value">$${knife.avgPrice}</div>
-          <div class="price-range ${tC}">${tA} ${knife.trendPct}</div>
+
+  const card = document.createElement('div');
+  card.className = 'knife-card';
+
+  const tC = knife.trend==='up'?'trend-up':knife.trend==='down'?'trend-down':'trend-flat';
+  const tA = knife.trend==='up'?'↑':knife.trend==='down'?'↓':'→';
+  const maxH = Math.max(...knife.history), minH = Math.min(...knife.history);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+  const bars = knife.history.map((h,i) => {
+    const pct = ((h-minH)/(maxH-minH||1))*75+25;
+    const cls = h===maxH?'highest':h===minH?'lowest':'';
+    return `<div class="chart-bar ${cls}" style="height:${pct}%" title="$${h}"></div>`;
+  }).join('');
+  const mLbls = months.map(m=>`<div class="chart-month">${m}</div>`).join('');
+  const rC=`rec-${knife.rec}`;
+  const rE=knife.rec==='buy'?'🟢':knife.rec==='sell'?'🔴':'🟡';
+
+  const variantsHtml = knife.knownVariants && knife.knownVariants.length
+    ? `<div style="margin-bottom:14px">
+        <div class="notes-label">KNOWN VARIANTS / SPRINT RUNS</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">${knife.knownVariants.map(v=>`<span style="background:var(--surface);border:1px solid var(--border);border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);padding:3px 8px">${v}</span>`).join('')}</div>
+      </div>` : '';
+
+  const knifeJson = JSON.stringify({...knife, sources: undefined}).replace(/"/g,'&quot;');
+
+  card.innerHTML = `
+    <div class="card-top" onclick="toggleDetail(this)">
+      <div class="card-img">${knife.emoji||'🔪'}</div>
+      <div class="card-info">
+        <div class="card-name">${esc(knife.name)}</div>
+        <div class="card-brand">${esc((knife.brand||'').toUpperCase())}</div>
+        <div class="card-type-badge">${esc(knife.typeBadge||'')}</div>
+      </div>
+      <div class="card-price-col">
+        <div class="price-label">AVG MARKET</div>
+        <div class="price-value">$${knife.avgPrice}</div>
+        <div class="price-range ${tC}">${tA} ${knife.trendPct}</div>
+      </div>
+    </div>
+    <div class="card-detail">
+      <div class="detail-grid">
+        <div><div class="detail-item-label">LOW USED</div><div class="detail-item-value trend-down">$${knife.lowPrice}</div></div>
+        <div><div class="detail-item-label">HIGH USED</div><div class="detail-item-value trend-up">$${knife.highPrice}</div></div>
+        <div><div class="detail-item-label">RETAIL NEW</div><div class="detail-item-value">$${knife.retail}</div></div>
+        <div><div class="detail-item-label">EST. SALES/MO</div><div class="detail-item-value">${knife.sales30d}</div></div>
+      </div>
+      <div class="chart-section">
+        <div class="chart-label">ESTIMATED 8-MONTH PRICE HISTORY (USD)</div>
+        <div class="mini-chart">${bars}</div>
+        <div class="chart-months">${mLbls}</div>
+      </div>
+      <div class="rec-box ${rC}">
+        <div class="rec-icon">${rE}</div>
+        <div class="rec-text">
+          <div class="rec-action">${(knife.rec||'hold').toUpperCase()}</div>
+          <div class="rec-reason">${esc(knife.recReason||'')}</div>
         </div>
       </div>
-      <div class="card-detail">
-        <div class="detail-grid">
-          <div class="detail-item"><div class="detail-item-label">LOW 30D</div><div class="detail-item-value trend-down">$${knife.lowPrice}</div></div>
-          <div class="detail-item"><div class="detail-item-label">HIGH 30D</div><div class="detail-item-value trend-up">$${knife.highPrice}</div></div>
-          <div class="detail-item"><div class="detail-item-label">RETAIL NEW</div><div class="detail-item-value">$${knife.retail}</div></div>
-          <div class="detail-item"><div class="detail-item-label">SALES 30D</div><div class="detail-item-value">${knife.sales30d}</div></div>
-        </div>
-        <div class="chart-section">
-          <div class="chart-label">8-MONTH PRICE HISTORY</div>
-          <div class="mini-chart">${bars}</div>
-          <div class="chart-months">${mLbls}</div>
-        </div>
-        <div class="rec-box ${rC}">
-          <div class="rec-icon">${rE}</div>
-          <div class="rec-text"><div class="rec-action">${knife.rec.toUpperCase()}</div><div class="rec-reason">${knife.recReason}</div></div>
-        </div>
-        ${knife.isGeneric?'<div style="font-size:11px;color:var(--muted);margin-bottom:12px;font-family:\'DM Mono\',monospace;">⚠ Estimated — verify via sources below</div>':''}
-        <div class="sources-label">VERIFY ON</div>
-        <div class="source-links">${knife.sources.map(s=>`<a class="source-link" href="${s.url}" target="_blank">${s.name} ↗</a>`).join('')}</div>
-        <button class="add-col-btn" onclick="addToCollection(${knifeJson})">+ ADD TO MY COLLECTION</button>
-      </div>`;
-    grid.appendChild(card);
-  });
-  container.appendChild(grid);
+      ${knife.notes ? `<div class="notes-box"><div class="notes-label">COLLECTOR NOTES</div>${esc(knife.notes)}</div>` : ''}
+      ${variantsHtml}
+      <div class="sources-label">VERIFY PRICING ON</div>
+      <div class="source-links">${knife.sources.map(s=>`<a class="source-link" href="${s.url}" target="_blank">${s.name} ↗</a>`).join('')}</div>
+      <button class="add-col-btn" onclick='addToCollection(${knifeJson})'>+ ADD TO MY COLLECTION</button>
+    </div>`;
+
+  container.appendChild(card);
   document.getElementById('disclaimer').style.display = 'block';
+
+  // Auto-open detail
+  card.querySelector('.card-detail').classList.add('open');
 }
 
 function toggleDetail(el) { el.nextElementSibling.classList.toggle('open'); }
@@ -390,13 +440,20 @@ function addToCollection(knife) {
   localStorage.setItem('bladetrack_collection', JSON.stringify(collection));
   updateCollectionBar();
   renderCollection();
-  alert(`${knife.brand} ${knife.name} added!`);
+  alert(`${knife.brand} ${knife.name} added to your collection!`);
 }
 
 function updateCollectionBar() {
   const bar = document.getElementById('collectionBar');
   const colSec = document.getElementById('collection');
-  if (collection.length > 0) { bar.style.display='flex'; colSec.style.display='block'; document.getElementById('colCount').textContent = collection.length + (collection.length===1?' knife':' knives'); } else { bar.style.display='none'; colSec.style.display='none'; }
+  if (collection.length > 0) {
+    bar.style.display = 'flex';
+    colSec.style.display = 'block';
+    document.getElementById('colCount').textContent = collection.length + (collection.length===1?' knife':' knives');
+  } else {
+    bar.style.display = 'none';
+    colSec.style.display = 'none';
+  }
 }
 
 function renderCollection() {
@@ -409,10 +466,12 @@ function renderCollection() {
     const gStr = gain>=0?`+$${gain} (+${gainPct}%)`:`-$${Math.abs(gain)} (${gainPct}%)`;
     const row = document.createElement('div');
     row.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;';
-    row.innerHTML = `<div style="font-size:28px">${knife.emoji||'🔪'}</div><div style="flex:1"><div style="font-size:15px;font-weight:500;margin-bottom:2px">${knife.name}</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${knife.brand?.toUpperCase()||''} · Added ${knife.addedDate}</div></div><div style="text-align:right"><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">Paid $${knife.addedPrice}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent)">$${knife.avgPrice}</div><div class="${gC}" style="font-family:'DM Mono',monospace;font-size:10px">${gStr}</div></div>`;
+    row.innerHTML = `<div style="font-size:28px">${knife.emoji||'🔪'}</div><div style="flex:1"><div style="font-size:15px;font-weight:500;margin-bottom:2px">${esc(knife.name)}</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${esc((knife.brand||'').toUpperCase())} · Added ${knife.addedDate}</div></div><div style="text-align:right"><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">Paid $${knife.addedPrice}</div><div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent)">$${knife.avgPrice}</div><div class="${gC}" style="font-family:'DM Mono',monospace;font-size:10px">${gStr}</div></div>`;
     list.appendChild(row);
   });
 }
+
+function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 document.getElementById('searchInput').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
 updateCollectionBar();
