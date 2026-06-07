@@ -177,13 +177,22 @@
   <div class="popular-label">// Popular searches</div>
   <div class="popular-chips">
     <div class="chip" onclick="quickSearch('Benchmade Bugout')">Benchmade Bugout</div>
+    <div class="chip" onclick="quickSearch('Benchmade Griptilian')">Benchmade Griptilian</div>
     <div class="chip" onclick="quickSearch('Spyderco Para 3')">Spyderco Para 3</div>
-    <div class="chip" onclick="quickSearch('Buck 110')">Buck 110</div>
-    <div class="chip" onclick="quickSearch('ESEE 6')">ESEE 6</div>
-    <div class="chip" onclick="quickSearch('Ka-Bar BK2')">Ka-Bar BK2</div>
-    <div class="chip" onclick="quickSearch('Cold Steel SRK')">Cold Steel SRK</div>
-    <div class="chip" onclick="quickSearch('Gerber LMF II')">Gerber LMF II</div>
     <div class="chip" onclick="quickSearch('Spyderco Paramilitary 2')">Spyderco PM2</div>
+    <div class="chip" onclick="quickSearch('Spyderco Delica')">Spyderco Delica</div>
+    <div class="chip" onclick="quickSearch('Kershaw Leek')">Kershaw Leek</div>
+    <div class="chip" onclick="quickSearch('Microtech Ultratech')">Microtech Ultratech</div>
+    <div class="chip" onclick="quickSearch('Zero Tolerance 0450')">ZT 0450</div>
+    <div class="chip" onclick="quickSearch('Buck 110')">Buck 110</div>
+    <div class="chip" onclick="quickSearch('Case Trapper')">Case Trapper</div>
+    <div class="chip" onclick="quickSearch('ESEE 6')">ESEE 6</div>
+    <div class="chip" onclick="quickSearch('ESEE 4')">ESEE 4</div>
+    <div class="chip" onclick="quickSearch('Ka-Bar BK2')">Ka-Bar BK2</div>
+    <div class="chip" onclick="quickSearch('Ka-Bar USMC')">Ka-Bar USMC</div>
+    <div class="chip" onclick="quickSearch('Cold Steel SRK')">Cold Steel SRK</div>
+    <div class="chip" onclick="quickSearch('Mora Companion')">Mora Companion</div>
+    <div class="chip" onclick="quickSearch('Gerber LMF II')">Gerber LMF II</div>
   </div>
 </div>
 
@@ -206,7 +215,7 @@
   </div>
   <div id="results"></div>
   <div class="disclaimer" id="disclaimer" style="display:none">
-    ⚠ Prices are AI-estimated based on known market data patterns. Always verify on eBay, BladeHQ, or r/knife_swap before buying or selling.
+    ⚠ Prices are AI-estimated based on known market data patterns. Always verify on BladeBinge, eBay, r/knife_swap, BladeForums, KnifeHub, or KnifeMarket before buying or selling.
   </div>
 </div>
 
@@ -231,15 +240,44 @@
 let activeFilter = 'all';
 let collection = JSON.parse(localStorage.getItem('bladetrack_collection') || '[]');
 
+// Shared source builder — generates all marketplace links for a given search term
+function makeSources(query) {
+  const q = encodeURIComponent(query);
+  const qDash = query.toLowerCase().replace(/\s+/g,'-');
+  return [
+    { name:'BladeBinge',   url:`https://bladebinge.com/listings?search=${q}` },
+    { name:'eBay',         url:`https://www.ebay.com/sch/i.html?_nkw=${q}+used+knife` },
+    { name:'r/knife_swap', url:`https://www.reddit.com/r/knife_swap/search/?q=${q}&restrict_sr=1` },
+    { name:'BladeForums',  url:`https://www.bladeforums.com/search/?q=${q}&c[child_nodes]=1&c[node]=672&o=date` },
+    { name:'BladeHQ Used', url:`https://www.bladehq.com/cat--Used-Abused--143` },
+    { name:'KnifeHub',     url:`https://www.knifehub.com/search?q=${q}` },
+    { name:'KnifeMarket',  url:`https://knife-market.com/knives?search=${q}` },
+    { name:'eKnives',      url:`https://eknives.com/preowned/` },
+    { name:'GunBroker',    url:`https://www.gunbroker.com/All/search?Keywords=${q}+knife` },
+  ];
+}
+
 const knifeDatabase = {
-  'benchmade bugout': { name:'Bugout 535', brand:'Benchmade', type:'pocket', typeBadge:'POCKET / EDC', emoji:'🔪', avgPrice:135, lowPrice:95, highPrice:175, retail:180, history:[118,125,128,122,130,135,133,138], trend:'up', trendPct:'+2.3%', sales30d:47, rec:'hold', recReason:'Stable demand, slight upward trend. Fair time to hold.', sources:[{name:'eBay',url:'https://www.ebay.com/sch/i.html?_nkw=benchmade+bugout+535+used'},{name:'r/knife_swap',url:'https://www.reddit.com/r/knife_swap/'},{name:'BladeHQ',url:'https://www.bladehq.com/cat--Benchmade--58'}] },
-  'spyderco para 3': { name:'Para 3', brand:'Spyderco', type:'pocket', typeBadge:'POCKET / EDC', emoji:'🗡️', avgPrice:100, lowPrice:72, highPrice:135, retail:145, history:[88,92,95,90,98,102,100,103], trend:'up', trendPct:'+3.0%', sales30d:61, rec:'buy', recReason:'Consistently below retail, high resale liquidity.', sources:[{name:'eBay',url:'https://www.ebay.com/sch/i.html?_nkw=spyderco+para+3+used'},{name:'r/knife_swap',url:'https://www.reddit.com/r/knife_swap/'},{name:'BladeHQ',url:'https://www.bladehq.com/cat--Spyderco--52'}] },
-  'spyderco paramilitary 2': { name:'Paramilitary 2', brand:'Spyderco', type:'pocket', typeBadge:'POCKET / TACTICAL', emoji:'🗡️', avgPrice:115, lowPrice:85, highPrice:155, retail:200, history:[100,105,108,110,112,115,114,118], trend:'up', trendPct:'+3.5%', sales30d:78, rec:'buy', recReason:'Trades well below retail. Strong resale demand.', sources:[{name:'eBay',url:'https://www.ebay.com/sch/i.html?_nkw=spyderco+paramilitary+2+used'},{name:'r/knife_swap',url:'https://www.reddit.com/r/knife_swap/'}] },
-  'ka-bar becker bk2': { name:'Becker BK2', brand:'Ka-Bar', type:'fixed', typeBadge:'FIXED BLADE', emoji:'🔱', avgPrice:65, lowPrice:48, highPrice:85, retail:90, history:[58,60,62,60,63,65,64,66], trend:'flat', trendPct:'+1.5%', sales30d:32, rec:'hold', recReason:'Steady workhorse. Prices stable, no urgency either way.', sources:[{name:'eBay',url:'https://www.ebay.com/sch/i.html?_nkw=kabar+becker+bk2+used'},{name:'Amazon',url:'https://www.amazon.com/s?k=ka-bar+becker+bk2'}] },
-  'gerber lmf ii': { name:'LMF II', brand:'Gerber', type:'fixed', typeBadge:'FIXED / SURVIVAL', emoji:'🔱', avgPrice:55, lowPrice:38, highPrice:75, retail:105, history:[50,52,50,53,54,55,53,56], trend:'flat', trendPct:'+1.8%', sales30d:22, rec:'buy', recReason:'Often found significantly below retail in secondary market.', sources:[{name:'eBay',url:'https://www.ebay.com/sch/i.html?_nkw=gerber+lmf+II+used'}] },
-  'buck 110': { name:'110 Folding Hunter', brand:'Buck Knives', type:'hunting', typeBadge:'HUNTING / FOLDING', emoji:'🦌', avgPrice:45, lowPrice:28, highPrice:75, retail:75, history:[40,42,43,44,44,45,46,47], trend:'up', trendPct:'+4.4%', sales30d:55, rec:'hold', recReason:'Classic icon with steady collector demand. Hold for appreciation.', sources:[{name:'eBay',url:'https://www.ebay.com/sch/i.html?_nkw=buck+110+folding+hunter+used'},{name:'GunBroker',url:'https://www.gunbroker.com/knives'}] },
-  'esee 6': { name:'ESEE-6', brand:'ESEE Knives', type:'fixed', typeBadge:'FIXED / SURVIVAL', emoji:'🔱', avgPrice:100, lowPrice:78, highPrice:130, retail:160, history:[88,90,92,94,96,98,100,101], trend:'up', trendPct:'+2.0%', sales30d:19, rec:'buy', recReason:'Lifetime warranty transfers. Consistent below-retail pricing.', sources:[{name:'eBay',url:'https://www.ebay.com/sch/i.html?_nkw=esee+6+knife+used'},{name:'r/knife_swap',url:'https://www.reddit.com/r/knife_swap/'}] },
-  'cold steel srk': { name:'SRK', brand:'Cold Steel', type:'fixed', typeBadge:'FIXED / TACTICAL', emoji:'⚔️', avgPrice:48, lowPrice:32, highPrice:70, retail:80, history:[42,43,44,45,46,47,48,49], trend:'up', trendPct:'+2.1%', sales30d:28, rec:'hold', recReason:'Budget tactical staple. Slight upward pressure.', sources:[{name:'eBay',url:'https://www.ebay.com/sch/i.html?_nkw=cold+steel+srk+used'}] }
+  // ── POCKET / FOLDING ──────────────────────────────────────
+  'benchmade bugout': { name:'Bugout 535', brand:'Benchmade', type:'pocket', typeBadge:'POCKET / EDC', emoji:'🔪', avgPrice:135, lowPrice:95, highPrice:175, retail:180, history:[118,125,128,122,130,135,133,138], trend:'up', trendPct:'+2.3%', sales30d:47, rec:'hold', recReason:'Stable demand, slight upward trend. Fair time to hold.', sources: makeSources('Benchmade Bugout 535') },
+  'benchmade griptilian': { name:'Griptilian 551', brand:'Benchmade', type:'pocket', typeBadge:'POCKET / EDC', emoji:'🔪', avgPrice:95, lowPrice:68, highPrice:130, retail:165, history:[82,85,88,86,90,93,95,96], trend:'up', trendPct:'+2.1%', sales30d:52, rec:'buy', recReason:'Classic workhorse, frequently below retail in secondary market.', sources: makeSources('Benchmade Griptilian 551') },
+  'spyderco para 3': { name:'Para 3', brand:'Spyderco', type:'pocket', typeBadge:'POCKET / EDC', emoji:'🗡️', avgPrice:100, lowPrice:72, highPrice:135, retail:145, history:[88,92,95,90,98,102,100,103], trend:'up', trendPct:'+3.0%', sales30d:61, rec:'buy', recReason:'Consistently below retail, high resale liquidity.', sources: makeSources('Spyderco Para 3') },
+  'spyderco paramilitary 2': { name:'Paramilitary 2', brand:'Spyderco', type:'pocket', typeBadge:'POCKET / TACTICAL', emoji:'🗡️', avgPrice:115, lowPrice:85, highPrice:155, retail:200, history:[100,105,108,110,112,115,114,118], trend:'up', trendPct:'+3.5%', sales30d:78, rec:'buy', recReason:'Trades well below retail. Strong resale demand.', sources: makeSources('Spyderco Paramilitary 2') },
+  'spyderco delica': { name:'Delica 4', brand:'Spyderco', type:'pocket', typeBadge:'POCKET / LIGHTWEIGHT', emoji:'🗡️', avgPrice:55, lowPrice:38, highPrice:75, retail:95, history:[48,50,52,51,53,55,54,56], trend:'flat', trendPct:'+1.8%', sales30d:44, rec:'buy', recReason:'Lightweight EDC staple. Great entry-level value on secondary market.', sources: makeSources('Spyderco Delica 4') },
+  'kershaw leek': { name:'Leek', brand:'Kershaw', type:'pocket', typeBadge:'POCKET / SLIM', emoji:'🔪', avgPrice:28, lowPrice:18, highPrice:42, retail:65, history:[22,24,25,24,26,27,28,29], trend:'up', trendPct:'+3.6%', sales30d:68, rec:'buy', recReason:'High volume resales, always well below retail. Great flipper value.', sources: makeSources('Kershaw Leek') },
+  'zero tolerance 0450': { name:'0450', brand:'Zero Tolerance', type:'pocket', typeBadge:'POCKET / PREMIUM', emoji:'🔪', avgPrice:145, lowPrice:110, highPrice:190, retail:220, history:[130,133,138,135,140,143,145,147], trend:'up', trendPct:'+1.4%', sales30d:21, rec:'hold', recReason:'Premium brand holds value well. Slight upward trend.', sources: makeSources('Zero Tolerance 0450') },
+  'microtech ultratech': { name:'Ultratech', brand:'Microtech', type:'pocket', typeBadge:'POCKET / AUTO', emoji:'🔪', avgPrice:280, lowPrice:220, highPrice:360, retail:400, history:[255,260,265,270,272,275,280,282], trend:'up', trendPct:'+2.5%', sales30d:18, rec:'hold', recReason:'Premium OTF, appreciates steadily. Collector favorite.', sources: makeSources('Microtech Ultratech') },
+  'buck 110': { name:'110 Folding Hunter', brand:'Buck Knives', type:'hunting', typeBadge:'HUNTING / FOLDING', emoji:'🦌', avgPrice:45, lowPrice:28, highPrice:75, retail:75, history:[40,42,43,44,44,45,46,47], trend:'up', trendPct:'+4.4%', sales30d:55, rec:'hold', recReason:'Classic icon with steady collector demand. Hold for appreciation.', sources: makeSources('Buck 110 Folding Hunter') },
+  'case trapper': { name:'Trapper', brand:'Case Knives', type:'hunting', typeBadge:'HUNTING / TRADITIONAL', emoji:'🦌', avgPrice:38, lowPrice:22, highPrice:65, retail:55, history:[33,34,35,35,36,37,38,39], trend:'up', trendPct:'+2.6%', sales30d:42, rec:'hold', recReason:'Traditional collector staple. Vintage models can exceed retail.', sources: makeSources('Case Trapper knife') },
+  // ── FIXED BLADE ───────────────────────────────────────────
+  'ka-bar becker bk2': { name:'Becker BK2', brand:'Ka-Bar', type:'fixed', typeBadge:'FIXED BLADE', emoji:'🔱', avgPrice:65, lowPrice:48, highPrice:85, retail:90, history:[58,60,62,60,63,65,64,66], trend:'flat', trendPct:'+1.5%', sales30d:32, rec:'hold', recReason:'Steady workhorse. Prices stable, no urgency either way.', sources: makeSources('Ka-Bar Becker BK2') },
+  'ka-bar usmc': { name:'USMC Fighting Knife', brand:'Ka-Bar', type:'fixed', typeBadge:'FIXED / TACTICAL', emoji:'🔱', avgPrice:55, lowPrice:38, highPrice:75, retail:75, history:[48,50,52,51,53,54,55,56], trend:'up', trendPct:'+1.8%', sales30d:48, rec:'hold', recReason:'Iconic military knife with consistent civilian demand.', sources: makeSources('Ka-Bar USMC knife') },
+  'gerber lmf ii': { name:'LMF II', brand:'Gerber', type:'fixed', typeBadge:'FIXED / SURVIVAL', emoji:'🔱', avgPrice:55, lowPrice:38, highPrice:75, retail:105, history:[50,52,50,53,54,55,53,56], trend:'flat', trendPct:'+1.8%', sales30d:22, rec:'buy', recReason:'Often found significantly below retail in secondary market.', sources: makeSources('Gerber LMF II') },
+  'esee 6': { name:'ESEE-6', brand:'ESEE Knives', type:'fixed', typeBadge:'FIXED / SURVIVAL', emoji:'🔱', avgPrice:100, lowPrice:78, highPrice:130, retail:160, history:[88,90,92,94,96,98,100,101], trend:'up', trendPct:'+2.0%', sales30d:19, rec:'buy', recReason:'Lifetime warranty transfers. Consistent below-retail pricing.', sources: makeSources('ESEE 6') },
+  'esee 4': { name:'ESEE-4', brand:'ESEE Knives', type:'fixed', typeBadge:'FIXED / SURVIVAL', emoji:'🔱', avgPrice:75, lowPrice:55, highPrice:100, retail:130, history:[65,67,70,69,72,74,75,76], trend:'up', trendPct:'+1.3%', sales30d:24, rec:'buy', recReason:'Compact survival workhorse. Transfers well below retail.', sources: makeSources('ESEE 4') },
+  'cold steel srk': { name:'SRK', brand:'Cold Steel', type:'fixed', typeBadge:'FIXED / TACTICAL', emoji:'⚔️', avgPrice:48, lowPrice:32, highPrice:70, retail:80, history:[42,43,44,45,46,47,48,49], trend:'up', trendPct:'+2.1%', sales30d:28, rec:'hold', recReason:'Budget tactical staple. Slight upward pressure.', sources: makeSources('Cold Steel SRK') },
+  'mora companion': { name:'Companion', brand:'Morakniv', type:'fixed', typeBadge:'FIXED / BUSHCRAFT', emoji:'🔱', avgPrice:14, lowPrice:9, highPrice:22, retail:20, history:[11,11,12,12,13,13,14,14], trend:'flat', trendPct:'+0.8%', sales30d:85, rec:'buy', recReason:'Highest-volume budget fixed blade. Reliable Scandi grind.', sources: makeSources('Morakniv Companion') },
+  'benchmade altitude': { name:'Altitude', brand:'Benchmade', type:'hunting', typeBadge:'HUNTING / FIXED', emoji:'🦌', avgPrice:180, lowPrice:140, highPrice:230, retail:260, history:[160,165,168,170,172,175,178,180], trend:'up', trendPct:'+2.9%', sales30d:12, rec:'hold', recReason:'Premium hunting fixed blade. Holds value exceptionally well.', sources: makeSources('Benchmade Altitude hunting knife') },
 };
 
 function quickSearch(term) {
@@ -278,7 +316,7 @@ function buildGeneric(q) {
   const brand = words[0].charAt(0).toUpperCase() + words[0].slice(1);
   const model = words.slice(1).join(' ').toUpperCase() || 'UNKNOWN MODEL';
   const base = 60 + Math.floor(Math.random() * 80);
-  return { name: model, brand, type:'pocket', typeBadge:'POCKET / FOLDING', emoji:'🔪', avgPrice:base, lowPrice:Math.round(base*0.7), highPrice:Math.round(base*1.4), retail:Math.round(base*1.6), history:Array.from({length:8},(_,i)=>Math.round(base*(0.9+i*0.015+Math.random()*0.05))), trend:'flat', trendPct:'+1.2%', sales30d:Math.floor(Math.random()*25)+5, rec:'hold', recReason:'Insufficient data — verify pricing via sources below.', sources:[{name:'eBay',url:`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}+knife+used`},{name:'r/knife_swap',url:'https://www.reddit.com/r/knife_swap/'},{name:'BladeHQ',url:`https://www.bladehq.com/search?term=${encodeURIComponent(q)}`}], isGeneric:true };
+  return { name: model, brand, type:'pocket', typeBadge:'POCKET / FOLDING', emoji:'🔪', avgPrice:base, lowPrice:Math.round(base*0.7), highPrice:Math.round(base*1.4), retail:Math.round(base*1.6), history:Array.from({length:8},(_,i)=>Math.round(base*(0.9+i*0.015+Math.random()*0.05))), trend:'flat', trendPct:'+1.2%', sales30d:Math.floor(Math.random()*25)+5, rec:'hold', recReason:'Insufficient data — verify pricing via sources below.', sources: makeSources(q), isGeneric:true };
 }
 
 function renderResults(matches) {
