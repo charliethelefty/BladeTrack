@@ -32,6 +32,10 @@
   .page-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
   .page-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 6vw, 64px); letter-spacing: 4px; color: var(--text); }
 
+  .ai-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(200,165,90,0.1); border: 1px solid rgba(200,165,90,0.3); border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); padding: 4px 12px; margin-top: 10px; letter-spacing: 1px; }
+  .ai-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
   .search-section { padding: 28px 32px 0; position: relative; z-index: 1; }
   .search-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; display: block; }
   .search-row { display: flex; gap: 10px; max-width: 680px; }
@@ -42,9 +46,12 @@
   .search-btn:hover { background: var(--accent2); }
   .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .ai-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(200,165,90,0.1); border: 1px solid rgba(200,165,90,0.3); border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); padding: 4px 12px; margin-top: 10px; letter-spacing: 1px; }
-  .ai-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .worker-banner { margin: 12px 32px 0; max-width: 680px; background: rgba(224,90,90,0.08); border: 1px solid rgba(224,90,90,0.25); border-radius: 6px; padding: 10px 14px; display: none; }
+  .worker-banner.show { display: flex; align-items: center; gap: 10px; }
+  .worker-banner-text { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--danger); letter-spacing: 0.5px; flex: 1; line-height: 1.5; }
+  .worker-input { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 11px; padding: 6px 10px; outline: none; width: 100%; margin-top: 6px; transition: border-color 0.2s; }
+  .worker-input:focus { border-color: var(--accent); }
+  .worker-save-btn { background: var(--accent); border: none; border-radius: 4px; color: #0e0e0f; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 6px 12px; cursor: pointer; white-space: nowrap; margin-top: 6px; }
 
   .popular-section { padding: 16px 32px 0; position: relative; z-index: 1; }
   .popular-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
@@ -54,7 +61,6 @@
 
   .main { padding: 20px 32px 60px; position: relative; z-index: 1; }
 
-  /* Loading */
   .loading { display: none; padding: 48px 0; }
   .loading.active { display: block; }
   .loading-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }
@@ -66,27 +72,23 @@
   .loading-step.done { color: var(--success); }
   .step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 
-  /* Empty state */
   .empty-state { text-align: center; padding: 80px 20px; }
   .empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.25; }
   .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: var(--muted); margin-bottom: 8px; }
   .empty-sub { font-size: 14px; color: var(--muted); opacity: 0.7; line-height: 1.6; }
 
-  /* Result card */
   .result-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 14px; }
   .result-title { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
   .result-ai-tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 1px; background: rgba(200,165,90,0.1); border: 1px solid rgba(200,165,90,0.2); border-radius: 10px; padding: 3px 10px; }
 
-  .knife-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; animation: fadeUp 0.35s ease both; transition: border-color 0.2s; margin-bottom: 14px; }
-  .knife-card:hover { border-color: var(--steel); }
+  .knife-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; animation: fadeUp 0.35s ease both; margin-bottom: 14px; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
   .card-top { padding: 18px; display: flex; gap: 14px; cursor: pointer; }
   .card-img { width: 72px; height: 72px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; }
   .card-info { flex: 1; min-width: 0; }
-  .card-name { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-name { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card-brand { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; margin-bottom: 7px; }
-  .card-type-badge { display: inline-block; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); padding: 2px 8px; letter-spacing: 0.5px; }
+  .card-type-badge { display: inline-block; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); padding: 2px 8px; }
   .card-price-col { text-align: right; flex-shrink: 0; }
   .price-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
   .price-value { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 1px; color: var(--accent); line-height: 1; }
@@ -95,15 +97,14 @@
 
   .card-detail { display: none; border-top: 1px solid var(--border); padding: 18px; background: var(--surface2); }
   .card-detail.open { display: block; }
-
-  .detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  .detail-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 18px; }
   .detail-item-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
   .detail-item-value { font-size: 14px; color: var(--text); font-weight: 500; }
 
   .chart-section { margin-bottom: 18px; }
   .chart-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
   .mini-chart { height: 70px; display: flex; align-items: flex-end; gap: 5px; }
-  .chart-bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--steel); position: relative; cursor: default; }
+  .chart-bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--steel); }
   .chart-bar.highest { background: var(--accent); }
   .chart-bar.lowest { background: var(--danger); opacity: 0.7; }
   .chart-months { display: flex; gap: 5px; margin-top: 5px; }
@@ -125,27 +126,24 @@
   .source-links { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
   .source-link { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 10px; padding: 5px 10px; text-decoration: none; letter-spacing: 0.5px; transition: border-color 0.2s; }
   .source-link:hover { border-color: var(--accent); }
-
   .add-col-btn { background: var(--accent); border: none; border-radius: 4px; color: #0e0e0f; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; padding: 10px 16px; cursor: pointer; width: 100%; transition: background 0.2s; }
   .add-col-btn:hover { background: var(--accent2); }
 
-  /* Error box */
   .error-box { background: rgba(224,90,90,0.08); border: 1px solid rgba(224,90,90,0.3); border-radius: 8px; padding: 20px 24px; text-align: center; }
   .error-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--danger); margin-bottom: 6px; }
   .error-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
-  /* Collection bar */
   .collection-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
   .col-bar-text { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
   .col-bar-count { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--accent); }
   .col-bar-link { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; text-decoration: none; border: 1px solid var(--accent); padding: 6px 14px; border-radius: 4px; }
-
   .disclaimer { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); opacity: 0.6; text-align: center; padding: 0 0 24px; line-height: 1.6; }
 
   @media (max-width: 700px) {
     nav { padding: 0 16px; }
     .nav-link { padding: 6px 10px; font-size: 10px; }
     .page-header, .search-section, .popular-section, .main { padding-left: 16px; padding-right: 16px; }
+    .worker-banner { margin-left: 16px; margin-right: 16px; }
     .detail-grid { grid-template-columns: 1fr 1fr; }
     .collection-bar { padding: 12px 16px; }
   }
@@ -168,7 +166,7 @@
 <div class="page-header">
   <div class="page-eyebrow">// AI-Powered Market Intelligence</div>
   <div class="page-title">KNIFE VALUE TRACKER</div>
-  <div class="ai-badge"><div class="ai-dot"></div> POWERED BY CLAUDE AI — ANY KNIFE, ANY BRAND</div>
+  <div class="ai-badge"><div class="ai-dot"></div> POWERED BY GEMINI AI — ANY KNIFE, ANY BRAND</div>
 </div>
 
 <div class="search-section">
@@ -179,6 +177,15 @@
   </div>
 </div>
 
+<!-- Worker URL setup banner (shown if not configured) -->
+<div class="worker-banner" id="workerBanner">
+  <div style="width:100%">
+    <div class="worker-banner-text">⚙ SETUP REQUIRED — Enter your Cloudflare Worker URL to enable AI search:</div>
+    <input class="worker-input" id="workerUrlInput" placeholder="https://bladetrack-worker.YOUR-SUBDOMAIN.workers.dev" type="url">
+    <button class="worker-save-btn" onclick="saveWorkerUrl()">SAVE & ENABLE</button>
+  </div>
+</div>
+
 <div class="popular-section">
   <div class="popular-label">// Popular searches</div>
   <div class="popular-chips">
@@ -186,7 +193,7 @@
     <div class="chip" onclick="quickSearch('Spyderco Paramilitary 2')">Spyderco PM2</div>
     <div class="chip" onclick="quickSearch('Spyderco Para 3')">Spyderco Para 3</div>
     <div class="chip" onclick="quickSearch('Chris Reeve Sebenza 31')">CRK Sebenza 31</div>
-    <div class="chip" onclick="quickSearch('Hinderer XM-18')">Hinderer XM-18</div>
+    <div class="chip" onclick="quickSearch('Hinderer XM-18 3.5')">Hinderer XM-18</div>
     <div class="chip" onclick="quickSearch('Microtech Ultratech')">Microtech Ultratech</div>
     <div class="chip" onclick="quickSearch('Zero Tolerance 0562')">ZT 0562</div>
     <div class="chip" onclick="quickSearch('Buck 110 Folding Hunter')">Buck 110</div>
@@ -197,7 +204,7 @@
     <div class="chip" onclick="quickSearch('Morakniv Companion')">Morakniv Companion</div>
     <div class="chip" onclick="quickSearch('Case Trapper')">Case Trapper</div>
     <div class="chip" onclick="quickSearch('Gerber LMF II')">Gerber LMF II</div>
-    <div class="chip" onclick="quickSearch('Benchmade Griptilian')">Benchmade Griptilian</div>
+    <div class="chip" onclick="quickSearch('Benchmade Griptilian 551')">Benchmade Griptilian</div>
     <div class="chip" onclick="quickSearch('Spyderco Delica 4')">Spyderco Delica</div>
     <div class="chip" onclick="quickSearch('CJRB Feldspar')">CJRB Feldspar</div>
   </div>
@@ -219,13 +226,12 @@
   <div id="emptyState" class="empty-state">
     <div class="empty-icon">🔪</div>
     <div class="empty-title">Search Any Knife</div>
-    <div class="empty-sub">Powered by Claude AI — search any brand, model, or variant.<br>No limit on what you can look up.</div>
+    <div class="empty-sub">Powered by Gemini AI — search any brand, model, or variant.<br>No limit on what you can look up.</div>
   </div>
 
   <div id="results"></div>
-
   <div class="disclaimer" id="disclaimer" style="display:none">
-    ⚠ Prices are AI-estimated based on Claude's training data. Always verify on BladeBinge, eBay, r/knife_swap, BladeForums, or KnifeHub before buying or selling.
+    ⚠ Prices are AI-estimated. Always verify on BladeBinge, eBay, r/knife_swap, BladeForums, or KnifeHub before buying or selling.
   </div>
 </div>
 
@@ -247,6 +253,24 @@
 
 <script>
 let collection = JSON.parse(localStorage.getItem('bladetrack_collection') || '[]');
+let WORKER_URL = localStorage.getItem('bt_worker_url') || '';
+
+// Show setup banner if worker URL not set
+window.addEventListener('DOMContentLoaded', () => {
+  if (!WORKER_URL) {
+    document.getElementById('workerBanner').classList.add('show');
+  }
+  updateCollectionBar();
+  renderCollection();
+});
+
+function saveWorkerUrl() {
+  const url = document.getElementById('workerUrlInput').value.trim().replace(/\/$/, '');
+  if (!url) { alert('Please enter your Worker URL.'); return; }
+  WORKER_URL = url;
+  localStorage.setItem('bt_worker_url', url);
+  document.getElementById('workerBanner').classList.remove('show');
+}
 
 function makeSources(query) {
   const q = encodeURIComponent(query);
@@ -272,91 +296,68 @@ async function doSearch() {
   const q = document.getElementById('searchInput').value.trim();
   if (!q) return;
 
-  // UI: loading state
+  if (!WORKER_URL) {
+    document.getElementById('workerBanner').classList.add('show');
+    document.getElementById('workerUrlInput').focus();
+    return;
+  }
+
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('results').innerHTML = '';
   document.getElementById('disclaimer').style.display = 'none';
   document.getElementById('loading').classList.add('active');
   document.getElementById('searchBtn').disabled = true;
 
-  // Animate loading steps
   const steps = ['step1','step2','step3','step4'];
   let stepIdx = 0;
   const stepInterval = setInterval(() => {
-    if (stepIdx > 0) document.getElementById(steps[stepIdx-1]).classList.replace('active','done');
+    if (stepIdx > 0) { document.getElementById(steps[stepIdx-1]).classList.remove('active'); document.getElementById(steps[stepIdx-1]).classList.add('done'); }
     if (stepIdx < steps.length) { document.getElementById(steps[stepIdx]).classList.add('active'); stepIdx++; }
-  }, 600);
+  }, 700);
 
   try {
-    const prompt = `You are a knife market expert. A user searched for: "${q}"
-
-Return a JSON object (no markdown, no explanation, just raw JSON) with this exact structure:
-{
-  "name": "full model name",
-  "brand": "manufacturer brand name",
-  "type": "pocket" or "fixed" or "hunting",
-  "typeBadge": "short category label like POCKET / EDC or FIXED / SURVIVAL",
-  "emoji": "one relevant emoji",
-  "avgPrice": number (typical used price in USD),
-  "lowPrice": number (low end used price),
-  "highPrice": number (high end used price),
-  "retail": number (MSRP new price),
-  "history": [8 numbers representing monthly used prices Jan-Aug, showing realistic trend],
-  "trend": "up" or "down" or "flat",
-  "trendPct": "percentage like +2.3% or -1.1%",
-  "sales30d": number (estimated secondary market sales volume per month),
-  "rec": "buy" or "sell" or "hold",
-  "recReason": "1-2 sentence explanation of why",
-  "notes": "2-3 sentences of useful collector notes: steel type, lock type, notable variants, things to look for when buying used",
-  "knownVariants": ["list", "of", "notable", "variants", "or", "sprint", "runs"]
-}
-
-Base prices on your knowledge of real secondary market prices for this knife. If it's an obscure knife, make a reasonable estimate based on similar knives. Always return valid JSON.`;
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
+      body: JSON.stringify({ query: q })
     });
 
-    clearInterval(stepInterval);
-    steps.forEach(s => { document.getElementById(s).classList.remove('active'); document.getElementById(s).classList.add('done'); });
+    if (!res.ok) throw new Error(`Worker returned ${res.status}`);
 
-    const data = await response.json();
-    const text = data.content?.[0]?.text || '';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const knife = JSON.parse(clean);
+    const knife = await res.json();
+    if (knife.error) throw new Error(knife.error);
+
     knife.sources = makeSources(`${knife.brand} ${knife.name}`);
 
+    clearInterval(stepInterval);
+    steps.forEach(s => { document.getElementById(s).classList.remove('active','done'); });
     document.getElementById('loading').classList.remove('active');
     document.getElementById('searchBtn').disabled = false;
-    steps.forEach(s => { document.getElementById(s).classList.remove('done','active'); });
     renderResult(knife);
 
   } catch (err) {
     clearInterval(stepInterval);
+    steps.forEach(s => { document.getElementById(s).classList.remove('active','done'); });
     document.getElementById('loading').classList.remove('active');
     document.getElementById('searchBtn').disabled = false;
-    steps.forEach(s => { document.getElementById(s).classList.remove('done','active'); });
 
     document.getElementById('results').innerHTML = `
       <div class="error-box">
         <div class="error-title">⚠ Search Failed</div>
-        <div class="error-sub">Could not retrieve data for "${q}".<br>Check your internet connection and try again.<br><small style="opacity:0.5;margin-top:6px;display:block">${err.message}</small></div>
+        <div class="error-sub">
+          Could not get data for "${esc(q)}".<br>
+          Make sure your Worker URL is correct and the Worker is deployed.<br>
+          <small style="opacity:0.5;margin-top:6px;display:block">${esc(err.message)}</small>
+        </div>
       </div>`;
   }
 }
 
 function renderResult(knife) {
   const container = document.getElementById('results');
-
   const hdr = document.createElement('div');
   hdr.className = 'result-header';
-  hdr.innerHTML = `<span class="result-title">RESULT</span><span class="result-ai-tag">✦ AI GENERATED</span>`;
+  hdr.innerHTML = `<span class="result-title">RESULT</span><span class="result-ai-tag">✦ GEMINI AI</span>`;
   container.appendChild(hdr);
 
   const card = document.createElement('div');
@@ -366,22 +367,26 @@ function renderResult(knife) {
   const tA = knife.trend==='up'?'↑':knife.trend==='down'?'↓':'→';
   const maxH = Math.max(...knife.history), minH = Math.min(...knife.history);
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
-  const bars = knife.history.map((h,i) => {
+  const bars = knife.history.map(h => {
     const pct = ((h-minH)/(maxH-minH||1))*75+25;
     const cls = h===maxH?'highest':h===minH?'lowest':'';
-    return `<div class="chart-bar ${cls}" style="height:${pct}%" title="$${h}"></div>`;
+    return `<div class="chart-bar ${cls}" style="height:${pct}%"></div>`;
   }).join('');
   const mLbls = months.map(m=>`<div class="chart-month">${m}</div>`).join('');
-  const rC=`rec-${knife.rec}`;
-  const rE=knife.rec==='buy'?'🟢':knife.rec==='sell'?'🔴':'🟡';
+  const rC = `rec-${knife.rec||'hold'}`;
+  const rE = knife.rec==='buy'?'🟢':knife.rec==='sell'?'🔴':'🟡';
 
   const variantsHtml = knife.knownVariants && knife.knownVariants.length
     ? `<div style="margin-bottom:14px">
         <div class="notes-label">KNOWN VARIANTS / SPRINT RUNS</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px">${knife.knownVariants.map(v=>`<span style="background:var(--surface);border:1px solid var(--border);border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);padding:3px 8px">${v}</span>`).join('')}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">${knife.knownVariants.map(v=>`<span style="background:var(--surface);border:1px solid var(--border);border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);padding:3px 8px">${esc(v)}</span>`).join('')}</div>
       </div>` : '';
 
-  const knifeJson = JSON.stringify({...knife, sources: undefined}).replace(/"/g,'&quot;');
+  const safeKnife = JSON.stringify({
+    name: knife.name, brand: knife.brand, emoji: knife.emoji,
+    avgPrice: knife.avgPrice, addedPrice: knife.avgPrice,
+    addedDate: new Date().toLocaleDateString()
+  }).replace(/"/g,'&quot;');
 
   card.innerHTML = `
     <div class="card-top" onclick="toggleDetail(this)">
@@ -397,7 +402,7 @@ function renderResult(knife) {
         <div class="price-range ${tC}">${tA} ${knife.trendPct}</div>
       </div>
     </div>
-    <div class="card-detail">
+    <div class="card-detail open">
       <div class="detail-grid">
         <div><div class="detail-item-label">LOW USED</div><div class="detail-item-value trend-down">$${knife.lowPrice}</div></div>
         <div><div class="detail-item-label">HIGH USED</div><div class="detail-item-value trend-up">$${knife.highPrice}</div></div>
@@ -420,22 +425,17 @@ function renderResult(knife) {
       ${variantsHtml}
       <div class="sources-label">VERIFY PRICING ON</div>
       <div class="source-links">${knife.sources.map(s=>`<a class="source-link" href="${s.url}" target="_blank">${s.name} ↗</a>`).join('')}</div>
-      <button class="add-col-btn" onclick='addToCollection(${knifeJson})'>+ ADD TO MY COLLECTION</button>
+      <button class="add-col-btn" onclick='addToCollection(${safeKnife})'>+ ADD TO MY COLLECTION</button>
     </div>`;
 
   container.appendChild(card);
   document.getElementById('disclaimer').style.display = 'block';
-
-  // Auto-open detail
-  card.querySelector('.card-detail').classList.add('open');
 }
 
 function toggleDetail(el) { el.nextElementSibling.classList.toggle('open'); }
 
 function addToCollection(knife) {
   if (collection.find(k=>k.name===knife.name&&k.brand===knife.brand)) { alert('Already in your collection!'); return; }
-  knife.addedPrice = knife.avgPrice;
-  knife.addedDate = new Date().toLocaleDateString();
   collection.push(knife);
   localStorage.setItem('bladetrack_collection', JSON.stringify(collection));
   updateCollectionBar();
@@ -445,23 +445,19 @@ function addToCollection(knife) {
 
 function updateCollectionBar() {
   const bar = document.getElementById('collectionBar');
-  const colSec = document.getElementById('collection');
+  const sec = document.getElementById('collection');
   if (collection.length > 0) {
-    bar.style.display = 'flex';
-    colSec.style.display = 'block';
+    bar.style.display = 'flex'; sec.style.display = 'block';
     document.getElementById('colCount').textContent = collection.length + (collection.length===1?' knife':' knives');
-  } else {
-    bar.style.display = 'none';
-    colSec.style.display = 'none';
-  }
+  } else { bar.style.display = 'none'; sec.style.display = 'none'; }
 }
 
 function renderCollection() {
   const list = document.getElementById('collectionList');
   list.innerHTML = '';
   collection.forEach(knife => {
-    const gain = knife.avgPrice - knife.addedPrice;
-    const gainPct = ((gain/knife.addedPrice)*100).toFixed(1);
+    const gain = (knife.avgPrice||0) - (knife.addedPrice||0);
+    const gainPct = knife.addedPrice ? ((gain/knife.addedPrice)*100).toFixed(1) : '0.0';
     const gC = gain>=0?'trend-up':'trend-down';
     const gStr = gain>=0?`+$${gain} (+${gainPct}%)`:`-$${Math.abs(gain)} (${gainPct}%)`;
     const row = document.createElement('div');
@@ -474,8 +470,6 @@ function renderCollection() {
 function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 document.getElementById('searchInput').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
-updateCollectionBar();
-renderCollection();
 </script>
 </body>
 </html>
